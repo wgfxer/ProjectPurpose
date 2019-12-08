@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/edit_purpose"
+        android:icon="@drawable/ic_edit_white"
+        android:title="@string/edit_purpose_menu"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/share_purpose"
+        android:icon="@drawable/ic_share_white"
+        android:title="@string/share_purpose"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/edit_purpose_theme"
+        android:title="@string/theme_text"
+        app:showAsAction="never" />
+
+    <item
+        android:title="@string/add_in_calendar_text"
+        android:id="@+id/add_purpose_in_calendar"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_purpose"
+        android:title="@string/delete_purpose"
+        app:showAsAction="never" />
+</menu>

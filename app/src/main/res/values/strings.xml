@@ -1,0 +1,48 @@
+<resources>
+    <plurals name="days_count">
+        <item quantity="one">%1$d день</item>
+        <item quantity="two">%1$d дня</item>
+        <item quantity="few">%1$d дня</item>
+        <item quantity="many">%1$d дней</item>
+        <item quantity="other">%1$d дней</item>
+    </plurals>
+
+    <string name="app_name">ProjectPurpose</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_items">Ты еще не записал ни одной цели</string>
+    <string name="purposes">ЦЕЛИ</string>
+    <string name="choose_date">Выбрать дату</string>
+    <string name="button_done">Готово</string>
+    <string name="purpose_hint">Цель</string>
+    <string name="when_hint">Когда?</string>
+    <string name="edit_purpose">Редактирование цели</string>
+    <string name="new_purpose">Добавление цели</string>
+    <string name="date_pick">Дата цели:</string>
+    <string name="delete_purpose">Удалить</string>
+    <string name="edit_purpose_menu">Редактировать</string>
+    <string name="share_purpose_message">Хочу поделиться своей целью! %1$s до %2$s</string>
+    <string name="share_purpose">Поделиться</string>
+    <string name="photo_hint">Фото</string>
+    <string name="take_photo">Выбрать фото</string>
+    <string name="days_after">дней \nпрошло</string>
+    <string name="purposes_list_title">BE THE HARDEST WORKER IN THE ROOM</string>
+    <string name="actions_plan_text">План действий</string>
+    <string name="time_end_text">Время вышло</string>
+    <string name="days_left_text">Осталось %s</string>
+    <string name="toast_didnt_enter_goal_name">Вы не вввели название цели</string>
+    <string name="toast_didnt_enter_date">Вы не выбрали дату цели</string>
+    <string name="change_image_text">Изменить фото</string>
+    <string name="theme_text">Тема</string>
+    <string name="edit_theme_text">Редактировать тему</string>
+    <string name="alpha_text">Непрозрачность</string>
+    <string name="actions_plan_title">План действий</string>
+    <string name="motivation_title">Мотивация</string>
+    <string name="notes_title">Заметки</string>
+    <string name="actions_plan_hint">Напишите примерный план действий, например каждый день заниматься в зале или посетить какие-нибудь курсы.</string>
+    <string name="motivation_hint">Напишите, почему вам очень важно достичь этой цели, в тяжелые моменты это может помочь вам не опустить руки. </string>
+    <string name="notes_hint">Тут можно написать любые примечания.</string>
+    <string name="white_font_text">Белый шрифт</string>
+
+    <string name="add_in_calendar_text">Добавить в календарь</string>
+
+</resources>

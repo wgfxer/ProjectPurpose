@@ -1,0 +1,40 @@
+package com.wgfxer.projectpurpose.presentation.viewmodel;
+
+
+import com.wgfxer.projectpurpose.data.Purpose;
+import com.wgfxer.projectpurpose.domain.IPurposesRepository;
+
+import java.util.List;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
+
+public class MainViewModel extends ViewModel {
+
+    private IPurposesRepository repository;
+
+    public MainViewModel(IPurposesRepository repository) {
+        this.repository = repository;
+    }
+
+    public LiveData<List<Purpose>> getPurposes() {
+        return repository.getAllPurposes();
+    }
+
+    public LiveData<Purpose> getPurposeById(int id) {
+        return repository.getPurposeById(id);
+    }
+
+    public void insertPurpose(Purpose purpose) {
+        repository.insertPurpose(purpose);
+    }
+
+    public void updatePurpose(Purpose purpose) {
+        repository.updatePurpose(purpose);
+    }
+
+    public void deletePurpose(Purpose purpose) {
+        repository.deletePurpose(purpose);
+    }
+
+}
