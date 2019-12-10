@@ -11,9 +11,13 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,13 +35,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.viewpager.widget.ViewPager;
 
 public class PurposeInfoActivity extends AppCompatActivity implements EditThemeDialogFragment.OnThemeChangeListener {
     private static final String KEY_PURPOSE_ID = "PURPOSE_ID";
+    private static final String KEY_SELECTED_MODE = "SELECTED_MODE";
+    private static final int SELECTED_MODE_NOTES = 1;
+    private static final int SELECTED_MODE_REPORTS = 2;
 
     private Purpose purpose;
 
@@ -45,10 +52,15 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     private ImageView toolbarImage;
     private ImageView toolbarGradient;
     private TextView daysLeftTextView;
-    private ViewPager notesViewPager;
-    private NotesAdapter notesAdapter;
+    private FragmentManager fragmentManager;
 
     private MainViewModel viewModel;
+
+    private NotesListFragment notesListFragment;
+    private CalendarViewFragment calendarViewFragment;
+    private Button showReportsButton;
+    private Button showNotesButton;
+    private int currentMode = SELECTED_MODE_NOTES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +70,10 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         setUpViews();
 
         observeViewModel();
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        purpose.setNotesList(notesAdapter.getNotesList());
-        viewModel.updatePurpose(purpose);
+        if(savedInstanceState != null){
+            switchMode(savedInstanceState.getInt(KEY_SELECTED_MODE));
+        }
     }
 
     public static Intent newIntent(Context context, int id) {
@@ -118,22 +127,46 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         toolbarImage = findViewById(R.id.toolbar_image);
         toolbarGradient = findViewById(R.id.toolbar_gradient);
         daysLeftTextView = findViewById(R.id.days_left);
-        notesViewPager = findViewById(R.id.notes_view_pager);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        float dip = 10f;
-        Resources r = getResources();
-        float px = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dip,
-                r.getDisplayMetrics()
-        );
-        notesViewPager.setPageMargin((int) px);
-        notesAdapter = new NotesAdapter(getSupportFragmentManager());
-        notesViewPager.setAdapter(notesAdapter);
+        fragmentManager = getSupportFragmentManager();
+        notesListFragment = NotesListFragment.newInstance(getIntent().getIntExtra(KEY_PURPOSE_ID,-1));
+        calendarViewFragment = CalendarViewFragment.newInstance(getIntent().getIntExtra(KEY_PURPOSE_ID,-1));
+        if(fragmentManager.findFragmentById(R.id.fragment_container) == null){
+            fragmentManager.beginTransaction().replace(R.id.fragment_container,notesListFragment).commit();
+        }
+
+        showNotesButton = findViewById(R.id.show_notes_button);
+        showReportsButton = findViewById(R.id.show_reports_button);
+        showNotesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchMode(SELECTED_MODE_NOTES);
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,notesListFragment).commit();
+            }
+        });
+        showReportsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchMode(SELECTED_MODE_REPORTS);
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,calendarViewFragment).commit();
+            }
+        });
+    }
+
+    private void switchMode(int mode){
+        if(mode == SELECTED_MODE_NOTES){
+            showNotesButton.setTextColor(Color.BLACK);
+            showReportsButton.setTextColor(Color.LTGRAY);
+            currentMode = SELECTED_MODE_NOTES;
+        } else if(mode == SELECTED_MODE_REPORTS){
+            showNotesButton.setTextColor(Color.LTGRAY);
+            showReportsButton.setTextColor(Color.BLACK);
+            currentMode = SELECTED_MODE_REPORTS;
+        }
     }
 
     private void observeViewModel() {
@@ -172,7 +205,6 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
             GradientDrawable gradientDrawable = (GradientDrawable) getDrawable(purpose.getTheme().getGradientId());
             daysLeftTextView.setTextColor(gradientDrawable.getColors()[1]);
         }
-        notesAdapter.setNotesList(purpose.getNotesList());
         Drawable textViewBackground = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             textViewBackground = getDrawable(R.drawable.white_background_text_view);
@@ -231,5 +263,11 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         intent.putExtra(Intent.EXTRA_TEXT, share_text);
         intent = Intent.createChooser(intent, getString(R.string.share_purpose));
         startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_SELECTED_MODE,currentMode);
     }
 }

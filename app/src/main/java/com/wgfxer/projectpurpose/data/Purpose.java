@@ -4,6 +4,7 @@ package com.wgfxer.projectpurpose.data;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.domain.Note;
 import com.wgfxer.projectpurpose.domain.PurposeTheme;
+import com.wgfxer.projectpurpose.domain.Report;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +24,7 @@ public class Purpose {
     private Date date;
     private ArrayList<Note> notesList;
     private PurposeTheme theme;
+    private ArrayList<Report> reportsList;
 
     public Purpose() {
         this.theme = new PurposeTheme();
@@ -33,6 +35,8 @@ public class Purpose {
         notesList.add(actionsPlan);
         notesList.add(motivation);
         notesList.add(notes);
+        reportsList = new ArrayList<>();
+
     }
 
     public int getId() {
@@ -73,5 +77,13 @@ public class Purpose {
 
     public void setTheme(PurposeTheme theme) {
         this.theme = theme;
+    }
+
+    public ArrayList<Report> getReportsList() {
+        return reportsList;
+    }
+
+    public void setReportsList(ArrayList<Report> reportsList) {
+        this.reportsList = reportsList;
     }
 }

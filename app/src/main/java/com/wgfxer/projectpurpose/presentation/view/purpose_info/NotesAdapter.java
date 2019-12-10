@@ -1,5 +1,7 @@
 package com.wgfxer.projectpurpose.presentation.view.purpose_info;
 
+import android.util.Log;
+
 import com.wgfxer.projectpurpose.domain.Note;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ class NotesAdapter extends FragmentPagerAdapter {
 
     private ArrayList<Note> notesList;
 
-    public NotesAdapter(FragmentManager fm) {
+    NotesAdapter(FragmentManager fm) {
         super(fm);
         this.notesList = new ArrayList<>();
     }
@@ -23,7 +25,7 @@ class NotesAdapter extends FragmentPagerAdapter {
         notifyDataSetChanged();
     }
 
-    public ArrayList<Note> getNotesList() {
+    ArrayList<Note> getNotesList() {
         return notesList;
     }
 

@@ -3,6 +3,7 @@ package com.wgfxer.projectpurpose.data;
 
 import com.wgfxer.projectpurpose.domain.Note;
 import com.wgfxer.projectpurpose.domain.PurposeTheme;
+import com.wgfxer.projectpurpose.domain.Report;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
 public class PurposeConverter {
     private static final String KEY_IMAGE_PATH = "image_path";
@@ -22,6 +24,11 @@ public class PurposeConverter {
     private static final String KEY_TITLE_RES_ID = "title_res_id";
     private static final String KEY_BODY = "body";
     private static final String KEY_HINT_RES_ID = "hint_res_id";
+    private static final String KEY_REPORT_DATE = "key_report_date";
+    private static final String KEY_REPORT_TITLE = "key_report_title";
+    private static final String KEY_REPORT_DESCRIPTION = "key_report_description";
+    private static final String KEY_REPORT_DID_GOOD = "key_report_did_good";
+    private static final String KEY_REPORT_COULD_BETTER = "key_report_could_better";
 
     @TypeConverter
     public String fromTheme(PurposeTheme theme) {
@@ -110,5 +117,76 @@ public class PurposeConverter {
             e.printStackTrace();
         }
         return notesList;
+    }
+
+    @TypeConverter
+    public String fromArrayListReports(ArrayList<Report> reports){
+        JSONArray jsonArrayListReports = new JSONArray();
+        for (Report report : reports) {
+            JSONObject jsonObjectReport = new JSONObject();
+            try {
+                jsonObjectReport.put(KEY_REPORT_DATE, report.getDateReport());
+                if (report.getTitleReport() == null || report.getTitleReport().isEmpty()) {
+                    jsonObjectReport.put(KEY_REPORT_TITLE, "null");
+                } else {
+                    jsonObjectReport.put(KEY_REPORT_TITLE, report.getTitleReport());
+                }
+
+                if (report.getDescriptionReport() == null || report.getDescriptionReport().isEmpty()) {
+                    jsonObjectReport.put(KEY_REPORT_DESCRIPTION, "null");
+                } else {
+                    jsonObjectReport.put(KEY_REPORT_DESCRIPTION, report.getDescriptionReport());
+                }
+
+                if (report.getWhatDidGood() == null || report.getWhatDidGood().isEmpty()) {
+                    jsonObjectReport.put(KEY_REPORT_DID_GOOD, "null");
+                } else {
+                    jsonObjectReport.put(KEY_REPORT_DID_GOOD, report.getWhatDidGood());
+                }
+
+                if (report.getWhatCouldBetter() == null || report.getWhatCouldBetter().isEmpty()) {
+                    jsonObjectReport.put(KEY_REPORT_COULD_BETTER, "null");
+                } else {
+                    jsonObjectReport.put(KEY_REPORT_COULD_BETTER, report.getWhatCouldBetter());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            jsonArrayListReports.put(jsonObjectReport);
+        }
+        return jsonArrayListReports.toString();
+    }
+
+    @TypeConverter
+    public ArrayList<Report> toArrayListReports(String source){
+        ArrayList<Report> reportsList = new ArrayList<>();
+        try {
+            JSONArray jsonArrayListReports = new JSONArray(source);
+            for (int i = 0; i < jsonArrayListReports.length(); i++) {
+                JSONObject jsonObjectReport = (JSONObject) jsonArrayListReports.get(i);
+                Report report = new Report();
+                report.setDateReport(jsonObjectReport.getLong(KEY_REPORT_DATE));
+                String title = (String) jsonObjectReport.get(KEY_REPORT_TITLE);
+                String description = (String) jsonObjectReport.get(KEY_REPORT_DESCRIPTION);
+                String didGood = (String) jsonObjectReport.get(KEY_REPORT_DID_GOOD);
+                String couldBetter = (String) jsonObjectReport.get(KEY_REPORT_COULD_BETTER);
+                if (!title.equals("null")) {
+                    report.setTitleReport(title);
+                }
+                if (!description.equals("null")) {
+                    report.setDescriptionReport(description);
+                }
+                if (!didGood.equals("null")) {
+                    report.setWhatDidGood(didGood);
+                }
+                if (!couldBetter.equals("null")) {
+                    report.setWhatCouldBetter(couldBetter);
+                }
+                reportsList.add(report);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return reportsList;
     }
 }
