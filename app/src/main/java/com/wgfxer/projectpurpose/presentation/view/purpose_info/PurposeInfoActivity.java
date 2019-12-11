@@ -3,7 +3,6 @@ package com.wgfxer.projectpurpose.presentation.view.purpose_info;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -11,13 +10,10 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,6 +58,9 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     private Button showNotesButton;
     private int currentMode = SELECTED_MODE_NOTES;
 
+    private Menu menu;
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +70,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
         observeViewModel();
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             switchMode(savedInstanceState.getInt(KEY_SELECTED_MODE));
         }
     }
@@ -84,6 +83,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.purpose_info_menu, menu);
         return true;
     }
@@ -91,29 +91,51 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
             case R.id.edit_purpose:
                 Intent intent = AddPurposeActivity.editPurpose(this, purpose.getId());
                 startActivity(intent);
                 return true;
-            case R.id.delete_purpose:
-                showDialogDeletePurpose();
-                return true;
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+
             case R.id.share_purpose:
                 sharePurpose(purpose);
                 return true;
+
             case R.id.edit_purpose_theme:
                 EditThemeDialogFragment editThemeDialog = EditThemeDialogFragment.newInstance(purpose.getTheme());
                 editThemeDialog.show(getSupportFragmentManager(), null);
                 return true;
-            case R.id.add_purpose_in_calendar: {
+
+            case R.id.add_purpose_in_calendar:
                 addPurposeInCalendar();
                 return true;
-            }
+
+            case R.id.check_purpose_done:
+                checkPurposeDone();
+                return true;
+
+            case R.id.delete_purpose:
+                showDialogDeletePurpose();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void checkPurposeDone() {
+        purpose.setDone(!purpose.isDone());
+        setDonePurposeItemTitle();
+        viewModel.updatePurpose(purpose);
+    }
+
+    private void setDonePurposeItemTitle() {
+        if(purpose.isDone()){
+            menu.findItem(R.id.check_purpose_done).setTitle(R.string.uncheck_done_text);
+        }else{
+            menu.findItem(R.id.check_purpose_done).setTitle(R.string.check_done_text);
+        }
     }
 
     @Override
@@ -128,15 +150,15 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         toolbarGradient = findViewById(R.id.toolbar_gradient);
         daysLeftTextView = findViewById(R.id.days_left);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         fragmentManager = getSupportFragmentManager();
-        notesListFragment = NotesListFragment.newInstance(getIntent().getIntExtra(KEY_PURPOSE_ID,-1));
-        calendarViewFragment = CalendarViewFragment.newInstance(getIntent().getIntExtra(KEY_PURPOSE_ID,-1));
-        if(fragmentManager.findFragmentById(R.id.fragment_container) == null){
-            fragmentManager.beginTransaction().replace(R.id.fragment_container,notesListFragment).commit();
+        notesListFragment = NotesListFragment.newInstance(getIntent().getIntExtra(KEY_PURPOSE_ID, -1));
+        calendarViewFragment = CalendarViewFragment.newInstance(getIntent().getIntExtra(KEY_PURPOSE_ID, -1));
+        if (fragmentManager.findFragmentById(R.id.fragment_container) == null) {
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, notesListFragment).commit();
         }
 
         showNotesButton = findViewById(R.id.show_notes_button);
@@ -145,24 +167,24 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
             @Override
             public void onClick(View v) {
                 switchMode(SELECTED_MODE_NOTES);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container,notesListFragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, notesListFragment).commit();
             }
         });
         showReportsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switchMode(SELECTED_MODE_REPORTS);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container,calendarViewFragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, calendarViewFragment).commit();
             }
         });
     }
 
-    private void switchMode(int mode){
-        if(mode == SELECTED_MODE_NOTES){
+    private void switchMode(int mode) {
+        if (mode == SELECTED_MODE_NOTES) {
             showNotesButton.setTextColor(Color.BLACK);
             showReportsButton.setTextColor(Color.LTGRAY);
             currentMode = SELECTED_MODE_NOTES;
-        } else if(mode == SELECTED_MODE_REPORTS){
+        } else if (mode == SELECTED_MODE_REPORTS) {
             showNotesButton.setTextColor(Color.LTGRAY);
             showReportsButton.setTextColor(Color.BLACK);
             currentMode = SELECTED_MODE_REPORTS;
@@ -219,11 +241,18 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && textViewBackground != null) {
                 textViewBackground.setTint(Color.BLACK);
             }
-            //установить верхние иконки в черный цвет
+            //поставить иконки тулбара в черный
         }
         if (textViewBackground != null) {
             daysLeftTextView.setBackground(textViewBackground);
         }
+
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        setDonePurposeItemTitle();
+        return super.onPrepareOptionsMenu(menu);
     }
 
     private void addPurposeInCalendar() {
@@ -268,6 +297,6 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_SELECTED_MODE,currentMode);
+        outState.putInt(KEY_SELECTED_MODE, currentMode);
     }
 }

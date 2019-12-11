@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import androidx.room.TypeConverter;
-import androidx.room.TypeConverters;
 
 public class PurposeConverter {
     private static final String KEY_IMAGE_PATH = "image_path";
@@ -120,7 +119,7 @@ public class PurposeConverter {
     }
 
     @TypeConverter
-    public String fromArrayListReports(ArrayList<Report> reports){
+    public String fromArrayListReports(ArrayList<Report> reports) {
         JSONArray jsonArrayListReports = new JSONArray();
         for (Report report : reports) {
             JSONObject jsonObjectReport = new JSONObject();
@@ -158,7 +157,7 @@ public class PurposeConverter {
     }
 
     @TypeConverter
-    public ArrayList<Report> toArrayListReports(String source){
+    public ArrayList<Report> toArrayListReports(String source) {
         ArrayList<Report> reportsList = new ArrayList<>();
         try {
             JSONArray jsonArrayListReports = new JSONArray(source);

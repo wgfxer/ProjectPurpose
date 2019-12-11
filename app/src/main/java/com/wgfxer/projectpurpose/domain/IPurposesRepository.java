@@ -10,6 +10,8 @@ import androidx.lifecycle.LiveData;
 public interface IPurposesRepository {
     LiveData<List<Purpose>> getAllPurposes();
 
+    LiveData<List<Purpose>> getDonePurposes();
+
     LiveData<Purpose> getPurposeById(int id);
 
     void insertPurpose(Purpose purpose);

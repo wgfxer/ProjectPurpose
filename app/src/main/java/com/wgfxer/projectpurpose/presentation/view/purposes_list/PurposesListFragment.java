@@ -20,6 +20,7 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,9 +29,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class PurposesListFragment extends Fragment {
 
+    static final int MODE_FUTURE_PURPOSES = 1;
+    static final int MODE_DONE_PURPOSES = 2;
+    private static final String KEY_MODE = "KEY_MODE";
     private TextView noItemsTextView;
     private RecyclerView purposesRecyclerView;
     private PurposesAdapter purposesAdapter;
+    private FloatingActionButton createPurposeButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,14 +48,14 @@ public class PurposesListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         initAdapter();
-        observeMainViewModel();
+        observeViewModel(getArguments().getInt(KEY_MODE));
     }
 
-    void initViews(View view) {
+    private void initViews(View view) {
         noItemsTextView = view.findViewById(R.id.no_items);
         purposesRecyclerView = view.findViewById(R.id.purposes_list);
         purposesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        FloatingActionButton createPurposeButton = view.findViewById(R.id.add_purpose);
+        createPurposeButton = view.findViewById(R.id.add_purpose);
         createPurposeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,7 +65,7 @@ public class PurposesListFragment extends Fragment {
         });
     }
 
-    void initAdapter() {
+    private void initAdapter() {
         purposesAdapter = new PurposesAdapter();
         purposesAdapter.setOnPurposeClickListener(new PurposesAdapter.OnPurposeClickListener() {
             @Override
@@ -72,19 +77,38 @@ public class PurposesListFragment extends Fragment {
         purposesRecyclerView.setAdapter(purposesAdapter);
     }
 
-    void observeMainViewModel() {
+    private void observeViewModel(int mode) {
         MainViewModel viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
                 .get(MainViewModel.class);
-        viewModel.getPurposes().observe(this, new Observer<List<Purpose>>() {
-            @Override
-            public void onChanged(@Nullable List<Purpose> purposes) {
-                if (purposes != null && !purposes.isEmpty()) {
-                    noItemsTextView.setVisibility(View.GONE);
-                } else {
-                    noItemsTextView.setVisibility(View.VISIBLE);
+        LiveData<List<Purpose>> purposesLiveData = null;
+        if(mode == MODE_FUTURE_PURPOSES){
+            purposesLiveData = viewModel.getPurposes();
+        }else if(mode == MODE_DONE_PURPOSES){
+            purposesLiveData = viewModel.getDonePurposes();
+            noItemsTextView.setText(R.string.no_done_purposes_text);
+            createPurposeButton.setVisibility(View.INVISIBLE);
+        }
+        if(purposesLiveData != null){
+            purposesLiveData.observe(this, new Observer<List<Purpose>>() {
+                @Override
+                public void onChanged(@Nullable List<Purpose> purposes) {
+                    if (purposes != null && !purposes.isEmpty()) {
+                        noItemsTextView.setVisibility(View.GONE);
+                    } else {
+                        noItemsTextView.setVisibility(View.VISIBLE);
+                    }
+                    purposesAdapter.setPurposesList(purposes);
                 }
-                purposesAdapter.setPurposesList(purposes);
-            }
-        });
+            });
+        }
+    }
+
+    public static PurposesListFragment newInstance(int mode) {
+
+        Bundle args = new Bundle();
+        args.putInt(KEY_MODE, mode);
+        PurposesListFragment fragment = new PurposesListFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

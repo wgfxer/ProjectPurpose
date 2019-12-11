@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {Purpose.class}, version = 2, exportSchema = false)
+@Database(entities = {Purpose.class}, version = 3, exportSchema = false)
 public abstract class ProjectPurposeDatabase extends RoomDatabase {
     private static ProjectPurposeDatabase instance;
     private static final String DB_NAME = "project_purpose.db";

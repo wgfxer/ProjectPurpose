@@ -21,6 +21,10 @@ public class MainViewModel extends ViewModel {
         return repository.getAllPurposes();
     }
 
+    public LiveData<List<Purpose>> getDonePurposes() {
+        return repository.getDonePurposes();
+    }
+
     public LiveData<Purpose> getPurposeById(int id) {
         return repository.getPurposeById(id);
     }

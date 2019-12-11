@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+    <CheckBoxPreference
+        app:key="@string/pref_key_dark_theme"
+        app:title="@string/pref_title_dark_theme"/>
+    <CheckBoxPreference
+        app:key="@string/pref_key_greeting"
+        app:title="@string/pref_title_greeting"
+        app:summary="@string/pref_summary_greeting"/>
+    <Preference
+        app:key="@string/pref_key_send_error"
+        app:title="@string/pref_title_send_error"
+        app:summary="@string/pref_summary_send_error"/>
+    <SwitchPreference
+        app:key="@string/pref_key_notifications"
+        app:title="@string/pref_title_notifications"
+        app:summary="@string/pref_summary_notifications"
+        app:disableDependentsState="false"/>
+    <Preference
+        app:key="@string/pref_key_time_notifications"
+        app:title="@string/pref_title_time_notifications"
+        app:summary="@string/pref_summary_time_notifications"
+        app:dependency="@string/pref_key_notifications"/>
+</PreferenceScreen>

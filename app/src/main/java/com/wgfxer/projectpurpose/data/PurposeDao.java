@@ -11,8 +11,11 @@ import androidx.room.Update;
 
 @Dao
 public interface PurposeDao {
-    @Query("SELECT * FROM purposes")
+    @Query("SELECT * FROM purposes WHERE isDone = 0")
     LiveData<List<Purpose>> getAllPurposes();
+
+    @Query("SELECT * FROM purposes WHERE isDone = 1")
+    LiveData<List<Purpose>> getDonePurposes();
 
     @Insert
     void insertPurpose(Purpose purpose);

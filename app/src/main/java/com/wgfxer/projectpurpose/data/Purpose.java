@@ -25,6 +25,7 @@ public class Purpose {
     private ArrayList<Note> notesList;
     private PurposeTheme theme;
     private ArrayList<Report> reportsList;
+    private boolean isDone;
 
     public Purpose() {
         this.theme = new PurposeTheme();
@@ -36,7 +37,6 @@ public class Purpose {
         notesList.add(motivation);
         notesList.add(notes);
         reportsList = new ArrayList<>();
-
     }
 
     public int getId() {
@@ -85,5 +85,13 @@ public class Purpose {
 
     public void setReportsList(ArrayList<Report> reportsList) {
         this.reportsList = reportsList;
+    }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public void setDone(boolean done) {
+        isDone = done;
     }
 }

@@ -14,4 +14,9 @@
         <item>@drawable/gradient11</item>
         <item>@drawable/gradient12</item>
     </integer-array>
+    <string name="pref_key_greeting" translatable="false">pref_key_greeting</string>
+    <string name="pref_key_send_error" translatable="false">pref_key_send_error</string>
+    <string name="pref_key_dark_theme">pref_key_dark_theme</string>
+    <string name="pref_key_notifications">pref_key_notifications</string>
+    <string name="pref_key_time_notifications">pref_key_time_notifications</string>
 </resources>

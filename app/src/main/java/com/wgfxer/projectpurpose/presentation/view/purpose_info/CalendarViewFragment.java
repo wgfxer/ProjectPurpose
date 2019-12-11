@@ -1,16 +1,23 @@
 package com.wgfxer.projectpurpose.presentation.view.purpose_info;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.data.Purpose;
+import com.wgfxer.projectpurpose.domain.PurposeTheme;
 import com.wgfxer.projectpurpose.domain.Report;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
@@ -20,6 +27,7 @@ import java.util.Calendar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -38,7 +46,7 @@ public class CalendarViewFragment extends Fragment {
     private TextView reportCouldBetterTextView;
 
     private Button createReportButton;
-    private ImageView editReportImageView;
+    private ImageButton editReportImageButton;
 
     private CardView cardViewReport;
 
@@ -49,7 +57,7 @@ public class CalendarViewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.calendar_view_fragment,container,false);
+        return inflater.inflate(R.layout.calendar_view_fragment, container, false);
     }
 
     @Override
@@ -60,7 +68,7 @@ public class CalendarViewFragment extends Fragment {
         calendarView.setMaxDate(System.currentTimeMillis());
         observeViewModel();
         setListeners();
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             selectedDate = savedInstanceState.getLong(KEY_PICKED_DATE);
             calendarView.setDate(selectedDate);
         }
@@ -69,7 +77,7 @@ public class CalendarViewFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(KEY_PICKED_DATE,selectedDate);
+        outState.putLong(KEY_PICKED_DATE, selectedDate);
     }
 
     static CalendarViewFragment newInstance(int id) {
@@ -87,24 +95,45 @@ public class CalendarViewFragment extends Fragment {
         reportDidGoodTextView = view.findViewById(R.id.what_did_good_text_view);
         reportCouldBetterTextView = view.findViewById(R.id.what_could_better_text_view);
         createReportButton = view.findViewById(R.id.button_write_report);
-        editReportImageView = view.findViewById(R.id.edit_image_view);
+        editReportImageButton = view.findViewById(R.id.edit_image_button);
         cardViewReport = view.findViewById(R.id.card_view_report);
     }
 
     private void observeViewModel() {
-        viewModel = ViewModelProviders.of(this,new MainViewModelFactory(getContext()))
+        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
                 .get(MainViewModel.class);
         viewModel.getPurposeById(getArguments().getInt(KEY_PURPOSE_ID)).observe(this, new Observer<Purpose>() {
             @Override
             public void onChanged(Purpose purpose) {
                 CalendarViewFragment.this.purpose = purpose;
                 showCurrentReport();
+                setButtonColor(purpose.getTheme());
             }
         });
     }
 
+    private void setButtonColor(PurposeTheme theme){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            GradientDrawable gradientDrawable = (GradientDrawable)getContext().getDrawable(theme.getGradientId());
+            Drawable cornerBackround = getContext().getDrawable(R.drawable.solid_button);
+            int[][] states = new int[][] {
+                    new int[] { android.R.attr.state_pressed},
+                    new int[] {-android.R.attr.state_pressed}
+            };
+
+            int[] colors = new int[] {
+                    ColorUtils.blendARGB(gradientDrawable.getColors()[1], Color.BLACK,0.2f),
+                    gradientDrawable.getColors()[1]
+            };
+
+            ColorStateList myList = new ColorStateList(states, colors);
+            cornerBackround.setTintList(myList);
+            createReportButton.setBackground(cornerBackround);
+        }
+    }
+
     private void setListeners() {
-        editReportImageView.setOnClickListener(new View.OnClickListener() {
+        editReportImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 EditReportDialog editReportDialog = EditReportDialog.getEditInstance(report);
@@ -116,7 +145,7 @@ public class CalendarViewFragment extends Fragment {
                         saveReport(report);
                     }
                 });
-                editReportDialog.show(getChildFragmentManager(),null);
+                editReportDialog.show(getChildFragmentManager(), null);
             }
         });
 
@@ -132,7 +161,7 @@ public class CalendarViewFragment extends Fragment {
                         addReport(report);
                     }
                 });
-                addReportDialog.show(getChildFragmentManager(),null);
+                addReportDialog.show(getChildFragmentManager(), null);
             }
         });
 
@@ -141,23 +170,23 @@ public class CalendarViewFragment extends Fragment {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.YEAR,year);
-                calendar.set(Calendar.MONTH,month);
-                calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 selectedDate = getIndependentTime(calendar.getTimeInMillis());
                 showCurrentReport();
             }
         });
     }
 
-    private long getIndependentTime(long time){
+    private long getIndependentTime(long time) {
         Calendar calendarResult = Calendar.getInstance();
         calendarResult.setTimeInMillis(0);
         Calendar calendarFromView = Calendar.getInstance();
         calendarFromView.setTimeInMillis(time);
-        calendarResult.set(Calendar.YEAR,calendarFromView.get(Calendar.YEAR));
-        calendarResult.set(Calendar.MONTH,calendarFromView.get(Calendar.MONTH));
-        calendarResult.set(Calendar.DAY_OF_MONTH,calendarFromView.get(Calendar.DAY_OF_MONTH));
+        calendarResult.set(Calendar.YEAR, calendarFromView.get(Calendar.YEAR));
+        calendarResult.set(Calendar.MONTH, calendarFromView.get(Calendar.MONTH));
+        calendarResult.set(Calendar.DAY_OF_MONTH, calendarFromView.get(Calendar.DAY_OF_MONTH));
         return calendarResult.getTimeInMillis();
     }
 
@@ -167,9 +196,9 @@ public class CalendarViewFragment extends Fragment {
     }
 
     private void saveReport(Report report) {
-        for(int i = 0; i < purpose.getReportsList().size(); i++){
-            if(purpose.getReportsList().get(i).getDateReport() == report.getDateReport()){
-                purpose.getReportsList().set(i,report);
+        for (int i = 0; i < purpose.getReportsList().size(); i++) {
+            if (purpose.getReportsList().get(i).getDateReport() == report.getDateReport()) {
+                purpose.getReportsList().set(i, report);
             }
             viewModel.updatePurpose(purpose);
         }
@@ -177,9 +206,9 @@ public class CalendarViewFragment extends Fragment {
 
     private void showCurrentReport() {
         report = getReportBySelectedDate();
-        if(report != null){
+        if (report != null) {
             showReport(report);
-        }else{
+        } else {
             createReportButton.setVisibility(View.VISIBLE);
             cardViewReport.setVisibility(View.INVISIBLE);
         }
@@ -187,15 +216,15 @@ public class CalendarViewFragment extends Fragment {
 
     private Report getReportBySelectedDate() {
         Report report = null;
-        for(Report rep : purpose.getReportsList()){
-            if(rep.getDateReport() == selectedDate){
+        for (Report rep : purpose.getReportsList()) {
+            if (rep.getDateReport() == selectedDate) {
                 report = rep;
             }
         }
         return report;
     }
 
-    private void showReport(Report report){
+    private void showReport(Report report) {
         createReportButton.setVisibility(View.INVISIBLE);
         cardViewReport.setVisibility(View.VISIBLE);
         reportTitleTextView.setText(report.getTitleReport());

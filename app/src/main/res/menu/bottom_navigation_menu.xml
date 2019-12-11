@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/purposes_menu_item"
+        android:icon="@drawable/ic_purpose_disabled"
+        android:title="@string/purposes_menu_item_text"/>
+    <item android:id="@+id/done_purposes_menu_item"
+        android:icon="@drawable/ic_done_purposes_disabled"
+        android:title="@string/done_purposes_menu_item_text"/>
+    <item android:id="@+id/settings_menu_item"
+        android:icon="@drawable/ic_settings_disabled"
+        android:title="@string/setting_menu_item_text"/>
+</menu>

@@ -35,7 +35,7 @@ public class EditReportDialog extends DialogFragment {
     private EditText reportCouldBetterEditText;
     private long reportDate;
 
-    interface OnEditReportListener{
+    interface OnEditReportListener {
         void onEditReport(Report report);
     }
 
@@ -46,7 +46,7 @@ public class EditReportDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.edit_report_dialog,null,false);
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.edit_report_dialog, null, false);
 
         findViews(view);
 
@@ -80,10 +80,10 @@ public class EditReportDialog extends DialogFragment {
 
     private void fillViews() {
         reportDate = getArguments().getLong(KEY_REPORT_DATE);
-        reportTitleEditText.setText(getArguments().getString(KEY_REPORT_TITLE,null));
-        reportDescriptionEditText.setText(getArguments().getString(KEY_REPORT_DESCRIPTION,null));
-        reportDidGoodEditText.setText(getArguments().getString(KEY_REPORT_DID_GOOD,null));
-        reportCouldBetterEditText.setText(getArguments().getString(KEY_REPORT_COULD_BETTER,null));
+        reportTitleEditText.setText(getArguments().getString(KEY_REPORT_TITLE, null));
+        reportDescriptionEditText.setText(getArguments().getString(KEY_REPORT_DESCRIPTION, null));
+        reportDidGoodEditText.setText(getArguments().getString(KEY_REPORT_DID_GOOD, null));
+        reportCouldBetterEditText.setText(getArguments().getString(KEY_REPORT_COULD_BETTER, null));
     }
 
     private void findViews(View view) {
@@ -96,9 +96,9 @@ public class EditReportDialog extends DialogFragment {
     private String getTitle() {
         int mode = getArguments().getInt(KEY_MODE);
         String title = null;
-        if(mode == KEY_MODE_CREATE){
+        if (mode == KEY_MODE_CREATE) {
             title = getString(R.string.create_report_dialog_title);
-        }else if(mode == KEY_MODE_EDIT){
+        } else if (mode == KEY_MODE_EDIT) {
             title = getString(R.string.edit_report_dialog_title);
         }
         return title;
@@ -108,8 +108,8 @@ public class EditReportDialog extends DialogFragment {
 
         Bundle args = new Bundle();
 
-        args.putLong(KEY_REPORT_DATE,reportDate);
-        args.putInt(KEY_MODE,KEY_MODE_CREATE);
+        args.putLong(KEY_REPORT_DATE, reportDate);
+        args.putInt(KEY_MODE, KEY_MODE_CREATE);
 
         EditReportDialog fragment = new EditReportDialog();
         fragment.setArguments(args);
@@ -120,13 +120,13 @@ public class EditReportDialog extends DialogFragment {
 
         Bundle args = new Bundle();
 
-        args.putLong(KEY_REPORT_DATE,report.getDateReport());
-        args.putString(KEY_REPORT_TITLE,report.getTitleReport());
-        args.putString(KEY_REPORT_DESCRIPTION,report.getDescriptionReport());
-        args.putString(KEY_REPORT_DID_GOOD,report.getWhatDidGood());
-        args.putString(KEY_REPORT_COULD_BETTER,report.getWhatCouldBetter());
+        args.putLong(KEY_REPORT_DATE, report.getDateReport());
+        args.putString(KEY_REPORT_TITLE, report.getTitleReport());
+        args.putString(KEY_REPORT_DESCRIPTION, report.getDescriptionReport());
+        args.putString(KEY_REPORT_DID_GOOD, report.getWhatDidGood());
+        args.putString(KEY_REPORT_COULD_BETTER, report.getWhatCouldBetter());
 
-        args.putInt(KEY_MODE,KEY_MODE_EDIT);
+        args.putInt(KEY_MODE, KEY_MODE_EDIT);
 
         EditReportDialog fragment = new EditReportDialog();
         fragment.setArguments(args);

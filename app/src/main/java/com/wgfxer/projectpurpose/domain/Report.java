@@ -1,7 +1,5 @@
 package com.wgfxer.projectpurpose.domain;
 
-import java.util.Date;
-
 public class Report {
     private long dateReport;
     private String titleReport;

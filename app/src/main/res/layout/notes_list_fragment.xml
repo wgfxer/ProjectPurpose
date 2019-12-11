@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.viewpager.widget.ViewPager
-    android:id="@+id/notes_view_pager"
+<androidx.viewpager.widget.ViewPager android:id="@+id/notes_view_pager"
     android:padding="20dp"
     android:clipToPadding="false"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

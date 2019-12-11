@@ -2,7 +2,6 @@ package com.wgfxer.projectpurpose.presentation.view.purpose_info;
 
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +9,8 @@ import android.view.ViewGroup;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.data.Purpose;
-import com.wgfxer.projectpurpose.domain.Note;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +33,7 @@ public class NotesListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setRetainInstance(true);
-        return inflater.inflate(R.layout.notes_list_fragment,container,false);
+        return inflater.inflate(R.layout.notes_list_fragment, container, false);
     }
 
     @Override
@@ -60,13 +55,13 @@ public class NotesListFragment extends Fragment {
         viewModel.getPurposeById(getArguments().getInt(KEY_PURPOSE_ID)).observe(this, new Observer<Purpose>() {
             @Override
             public void onChanged(Purpose purpose) {
-                if(purpose!=null){
+                if (purpose != null) {
                     NotesListFragment.this.purpose = purpose;
                     notesAdapter.setNotesList(purpose.getNotesList());
                 }
             }
         });
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             notesViewPager.postDelayed(new Runnable() {
 
                 @Override
@@ -89,13 +84,13 @@ public class NotesListFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_CURRENT_PAGE,notesViewPager.getCurrentItem());
+        outState.putInt(KEY_CURRENT_PAGE, notesViewPager.getCurrentItem());
     }
 
     public static NotesListFragment newInstance(int purposeId) {
 
         Bundle args = new Bundle();
-        args.putInt(KEY_PURPOSE_ID,purposeId);
+        args.putInt(KEY_PURPOSE_ID, purposeId);
         NotesListFragment fragment = new NotesListFragment();
         fragment.setArguments(args);
         return fragment;

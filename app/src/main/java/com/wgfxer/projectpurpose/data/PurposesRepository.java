@@ -23,6 +23,11 @@ public class PurposesRepository implements IPurposesRepository {
     }
 
     @Override
+    public LiveData<List<Purpose>> getDonePurposes() {
+        return database.purposeDao().getDonePurposes();
+    }
+
+    @Override
     public LiveData<Purpose> getPurposeById(int id) {
         return database.purposeDao().getPurposeById(id);
     }

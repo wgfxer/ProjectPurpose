@@ -1,7 +1,5 @@
 package com.wgfxer.projectpurpose.presentation.view.purpose_info;
 
-import android.util.Log;
-
 import com.wgfxer.projectpurpose.domain.Note;
 
 import java.util.ArrayList;
