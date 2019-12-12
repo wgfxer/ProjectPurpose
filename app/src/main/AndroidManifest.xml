@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wgfxer.projectpurpose">
 
@@ -12,15 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".presentation.view.purposes_list.MainActivity">
+        <activity android:name=".presentation.view.MainActivity" android:theme="@style/AppTheme.Launcher" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.view.add_purpose.AddPurposeActivity" />
-        <activity android:name=".presentation.view.purpose_info.PurposeInfoActivity" />
+        <activity android:name=".presentation.view.addpurpose.AddPurposeActivity" />
+        <activity android:name=".presentation.view.purposeinfo.PurposeInfoActivity" />
     </application>
+
 
 </manifest>

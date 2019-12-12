@@ -2,7 +2,7 @@ package com.wgfxer.projectpurpose.presentation.viewmodel;
 
 import android.content.Context;
 
-import com.wgfxer.projectpurpose.data.PurposesRepository;
+import com.wgfxer.projectpurpose.data.repository.PurposesRepository;
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
 
 import androidx.annotation.NonNull;

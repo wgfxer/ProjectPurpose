@@ -1,7 +1,7 @@
 package com.wgfxer.projectpurpose.domain;
 
 
-import com.wgfxer.projectpurpose.data.Purpose;
+import com.wgfxer.projectpurpose.models.data.Purpose;
 
 import java.util.List;
 

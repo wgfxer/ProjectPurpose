@@ -25,7 +25,7 @@
             android:src="@drawable/ic_edit_gray" />
 
         <EditText
-            android:id="@+id/purpose_title"
+            android:id="@+id/list_title_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"

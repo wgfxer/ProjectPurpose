@@ -33,7 +33,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/purpose_title"
+            android:id="@+id/list_title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -47,7 +47,7 @@
             android:id="@+id/purpose_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/purpose_title"
+            android:layout_below="@id/list_title_text_view"
             tools:text="31 июля 2019" />
 
 
@@ -63,7 +63,7 @@
                 android:id="@+id/text_days"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="дней"
+                android:text="@string/text_days_static"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

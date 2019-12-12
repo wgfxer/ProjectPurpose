@@ -1,7 +1,7 @@
 package com.wgfxer.projectpurpose.presentation.viewmodel;
 
 
-import com.wgfxer.projectpurpose.data.Purpose;
+import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class MainViewModel extends ViewModel {
 
     private IPurposesRepository repository;
 
-    public MainViewModel(IPurposesRepository repository) {
+    MainViewModel(IPurposesRepository repository) {
         this.repository = repository;
     }
 
