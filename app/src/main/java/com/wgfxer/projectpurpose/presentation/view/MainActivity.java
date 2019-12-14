@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.purposes_menu_item:
                         showFragment(PurposesListFragment.newInstance(PurposesListFragment.MODE_FUTURE_PURPOSES));
                         return true;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showFragment(Fragment fragment){
-        fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,android.R.anim.fade_out).replace(R.id.fragment_container, fragment).commit();
+    private void showFragment(Fragment fragment) {
+        fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).replace(R.id.fragment_container, fragment).commit();
     }
 }

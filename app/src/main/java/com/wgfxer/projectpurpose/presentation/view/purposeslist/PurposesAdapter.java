@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
-import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.helper.Utils;
+import com.wgfxer.projectpurpose.models.data.Purpose;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class PurposesAdapter extends RecyclerView.Adapter<PurposesAdapter.Purpos
 
         PurposesHolder(View itemView) {
             super(itemView);
-            titleTextView = itemView.findViewById(R.id.list_title_text_view);
+            titleTextView = itemView.findViewById(R.id.purpose_title_text_view);
             dateTextView = itemView.findViewById(R.id.purpose_date);
             daysToGoalTextView = itemView.findViewById(R.id.days);
             daysHintTextView = itemView.findViewById(R.id.text_days);

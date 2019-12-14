@@ -56,7 +56,7 @@ public class PurposesListFragment extends Fragment {
     private void initViews(View view) {
         noItemsTextView = view.findViewById(R.id.no_items);
         purposesRecyclerView = view.findViewById(R.id.purposes_list);
-        titleTextView = view.findViewById(R.id.list_title_text_view);
+        titleTextView = view.findViewById(R.id.purpose_title_text_view);
         purposesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         createPurposeButton = view.findViewById(R.id.add_purpose);
         createPurposeButton.setOnClickListener(new View.OnClickListener() {
@@ -84,16 +84,16 @@ public class PurposesListFragment extends Fragment {
         MainViewModel viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
                 .get(MainViewModel.class);
         LiveData<List<Purpose>> purposesLiveData = null;
-        if(mode == MODE_FUTURE_PURPOSES){
+        if (mode == MODE_FUTURE_PURPOSES) {
             purposesLiveData = viewModel.getPurposes();
             titleTextView.setText(R.string.purposes);
-        }else if(mode == MODE_DONE_PURPOSES){
+        } else if (mode == MODE_DONE_PURPOSES) {
             titleTextView.setText(R.string.done_purposes);
             purposesLiveData = viewModel.getDonePurposes();
             noItemsTextView.setText(R.string.no_done_purposes_text);
             createPurposeButton.setVisibility(View.INVISIBLE);
         }
-        if(purposesLiveData != null){
+        if (purposesLiveData != null) {
             purposesLiveData.observe(this, new Observer<List<Purpose>>() {
                 @Override
                 public void onChanged(@Nullable List<Purpose> purposes) {

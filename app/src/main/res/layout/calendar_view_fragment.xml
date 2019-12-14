@@ -32,7 +32,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/card_view_calendar"
-        android:visibility="invisible" />
+        android:visibility="invisible"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view_report"

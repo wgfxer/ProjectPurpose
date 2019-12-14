@@ -33,7 +33,7 @@
                 app:layout_collapseMode="parallax" />
 
             <TextView
-                android:id="@+id/list_title_text_view"
+                android:id="@+id/purpose_title_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="sans-serif-condensed"

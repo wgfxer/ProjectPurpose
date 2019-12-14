@@ -18,9 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
+import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.models.domain.PurposeTheme;
-import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.presentation.view.addpurpose.AddPurposeActivity;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.notesfragment.NotesListFragment;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.reportsfragment.ReportsFragment;
@@ -133,9 +133,9 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     }
 
     private void setDonePurposeItemTitle() {
-        if(purpose.isDone()){
+        if (purpose.isDone()) {
             menu.findItem(R.id.check_purpose_done).setTitle(R.string.uncheck_done_text);
-        }else{
+        } else {
             menu.findItem(R.id.check_purpose_done).setTitle(R.string.check_done_text);
         }
     }
@@ -147,7 +147,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     }
 
     private void setUpViews() {
-        purposeTitleTextView = findViewById(R.id.list_title_text_view);
+        purposeTitleTextView = findViewById(R.id.purpose_title_text_view);
         toolbarImage = findViewById(R.id.toolbar_image);
         toolbarGradient = findViewById(R.id.toolbar_gradient);
         daysLeftTextView = findViewById(R.id.days_left);

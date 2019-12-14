@@ -27,21 +27,21 @@ public class TimePickerFragment extends DialogFragment {
         this.onTimeSetListener = onTimeSetListener;
     }
 
-    interface OnTimeSetListener{
-        void onTimeSet(int hours,int minutes);
+    interface OnTimeSetListener {
+        void onTimeSet(int hours, int minutes);
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Log.i("MYTAG","MYTAG1");
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.time_picker,null,false);
+        Log.i("MYTAG", "MYTAG1");
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.time_picker, null, false);
         final TimePicker timePicker = view.findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             timePicker.setHour(getArguments().getInt(KEY_HOURS));
             timePicker.setMinute(getArguments().getInt(KEY_MINUTES));
-        }else{
+        } else {
             timePicker.setCurrentHour(getArguments().getInt(KEY_HOURS));
             timePicker.setCurrentMinute(getArguments().getInt(KEY_MINUTES));
         }
@@ -51,11 +51,11 @@ public class TimePickerFragment extends DialogFragment {
                 .setPositiveButton(R.string.dialog_ok_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog1, int which) {
-                        if(onTimeSetListener != null){
+                        if (onTimeSetListener != null) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                onTimeSetListener.onTimeSet(timePicker.getHour(),timePicker.getMinute());
-                            }else{
-                                onTimeSetListener.onTimeSet(timePicker.getCurrentHour(),timePicker.getCurrentMinute());
+                                onTimeSetListener.onTimeSet(timePicker.getHour(), timePicker.getMinute());
+                            } else {
+                                onTimeSetListener.onTimeSet(timePicker.getCurrentHour(), timePicker.getCurrentMinute());
                             }
                         }
                         dialog1.dismiss();
@@ -69,7 +69,7 @@ public class TimePickerFragment extends DialogFragment {
                 }).create();
     }
 
-    public static TimePickerFragment newInstance(int hours,int minutes) {
+    public static TimePickerFragment newInstance(int hours, int minutes) {
         Bundle args = new Bundle();
         args.putInt(KEY_HOURS, hours);
         args.putInt(KEY_MINUTES, minutes);

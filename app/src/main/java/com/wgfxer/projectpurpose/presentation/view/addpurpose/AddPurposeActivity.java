@@ -18,8 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.wgfxer.projectpurpose.R;
-import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.helper.Utils;
+import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
 
@@ -38,6 +38,10 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int PERMISSION_READ_EXTERNAL_REQUEST = 2;
 
+    private static final String KEY_PURPOSE_TITLE = "PURPOSE_TITLE";
+    private static final String KEY_PURPOSE_DATE = "PURPOSE_DATE";
+    private static final String KEY_PURPOSE_IMAGE_PATH = "PURPOSE_IMAGE_PATH";
+
     private EditText purposeTitleEditText;
     private Button selectDateButton;
     private Button pickImageButton;
@@ -55,7 +59,23 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         viewModel = ViewModelProviders.of(this, new MainViewModelFactory(this))
                 .get(MainViewModel.class);
 
-        purposeTitleEditText = findViewById(R.id.list_title_text_view);
+        setUpViews();
+
+        id = getIntent().getIntExtra(KEY_PURPOSE_ID, -1);
+
+        if (id != -1) {
+            observeViewModel(savedInstanceState);
+            getSupportActionBar().setTitle(R.string.edit_purpose);
+        } else {
+            purpose = new Purpose();
+            if(savedInstanceState != null){
+                updateUIFromState(savedInstanceState);
+            }
+        }
+    }
+
+    private void setUpViews() {
+        purposeTitleEditText = findViewById(R.id.purpose_title_text_view);
         selectDateButton = findViewById(R.id.choose_date);
         Button doneButton = findViewById(R.id.button_done);
         purposeLL = findViewById(R.id.purpose_ll);
@@ -68,25 +88,23 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         selectDateButton.setOnClickListener(this);
         pickImageButton.setOnClickListener(this);
         doneButton.setOnClickListener(this);
+    }
 
-        id = getIntent().getIntExtra(KEY_PURPOSE_ID, -1);
-        if (id != -1) {
-            LiveData<Purpose> purposeLiveData = viewModel.getPurposeById(id);
-            purposeLiveData.observe(this, new Observer<Purpose>() {
-                @Override
-                public void onChanged(@Nullable Purpose purpose) {
-                    AddPurposeActivity.this.purpose = purpose;
+    private void observeViewModel(final Bundle savedInstanceState) {
+        LiveData<Purpose> purposeLiveData = viewModel.getPurposeById(id);
+        purposeLiveData.observe(this, new Observer<Purpose>() {
+            @Override
+            public void onChanged(@Nullable Purpose purpose) {
+                AddPurposeActivity.this.purpose = purpose;
+                if(savedInstanceState == null){
                     if (purpose != null) {
                         updateUI();
                     }
+                }else{
+                    updateUIFromState(savedInstanceState);
                 }
-            });
-            getSupportActionBar().setTitle(R.string.edit_purpose);
-        } else {
-            purpose = new Purpose();
-        }
-
-
+            }
+        });
     }
 
     private void updateUI() {
@@ -95,6 +113,24 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         selectDateButton.setText(Utils.getStringFromDate(purpose.getDate()));
         if (purpose.getTheme().getImagePath() != null) {
             pickImageButton.setText(getString(R.string.change_image_text));
+        }
+    }
+
+    private void updateUIFromState(Bundle savedInstanceState) {
+        String purposeTitle = savedInstanceState.getString(KEY_PURPOSE_TITLE);
+        Date purposeDate = (Date)savedInstanceState.getSerializable(KEY_PURPOSE_DATE);
+        String purposeImagePath = savedInstanceState.getString(KEY_PURPOSE_IMAGE_PATH);
+
+        purposeTitleEditText.setText(purposeTitle);
+        purpose.setDate(purposeDate);
+        purpose.getTheme().setImagePath(purposeImagePath);
+
+        if(purposeDate != null){
+            selectDateButton.setText(Utils.getStringFromDate(purposeDate));
+        }
+
+        if(purposeImagePath != null){
+            pickImageButton.setText(R.string.change_image_text);
         }
     }
 
@@ -203,5 +239,13 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
     public void onDateSet(Date date) {
         purpose.setDate(date);
         selectDateButton.setText(Utils.getStringFromDate(date));
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_PURPOSE_TITLE,purposeTitleEditText.getText().toString());
+        outState.putSerializable(KEY_PURPOSE_DATE,purpose.getDate());
+        outState.putString(KEY_PURPOSE_IMAGE_PATH,purpose.getTheme().getImagePath());
     }
 }

@@ -25,12 +25,12 @@
             android:src="@drawable/ic_edit_gray" />
 
         <EditText
-            android:id="@+id/list_title_text_view"
+            android:id="@+id/purpose_title_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:hint="@string/purpose_hint"
-            android:maxLength="80"
+            android:maxLength="53"
             android:inputType="textCapSentences"
             android:layout_marginStart="8dp" />
     </LinearLayout>

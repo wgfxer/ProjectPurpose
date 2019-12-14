@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
@@ -31,7 +32,7 @@ public class DatePickerDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Log.i("MYTAG","MYTAG2");
+        Log.i("MYTAG", "MYTAG2");
         if (getActivity() instanceof OnDateSetListener) {
             onDateSetListener = (OnDateSetListener) getActivity();
         }
@@ -65,7 +66,7 @@ public class DatePickerDialogFragment extends DialogFragment {
                 .create();
     }
 
-    public static DatePickerDialogFragment newInstance(Date date) {
+    public static DatePickerDialogFragment newInstance(@Nullable Date date) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(KEY_PURPOSE_DATE, date);
         DatePickerDialogFragment datePickerFragment = new DatePickerDialogFragment();

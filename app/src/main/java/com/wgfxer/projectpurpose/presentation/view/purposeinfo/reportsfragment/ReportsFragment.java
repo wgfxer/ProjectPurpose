@@ -106,29 +106,8 @@ public class ReportsFragment extends Fragment {
             public void onChanged(Purpose purpose) {
                 ReportsFragment.this.purpose = purpose;
                 showCurrentReport();
-                setButtonColor(purpose.getTheme());
             }
         });
-    }
-
-    private void setButtonColor(PurposeTheme theme){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            GradientDrawable gradientDrawable = (GradientDrawable)getContext().getDrawable(theme.getGradientId());
-            Drawable cornerBackround = getContext().getDrawable(R.drawable.solid_button);
-            int[][] states = new int[][] {
-                    new int[] { android.R.attr.state_pressed},
-                    new int[] {-android.R.attr.state_pressed}
-            };
-
-            int[] colors = new int[] {
-                    ColorUtils.blendARGB(gradientDrawable.getColors()[1], Color.BLACK,0.2f),
-                    gradientDrawable.getColors()[1]
-            };
-
-            ColorStateList myList = new ColorStateList(states, colors);
-            cornerBackround.setTintList(myList);
-            createReportButton.setBackground(cornerBackround);
-        }
     }
 
     private void setListeners() {
