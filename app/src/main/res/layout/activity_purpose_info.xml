@@ -57,7 +57,7 @@
                     android:textSize="24sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
 
                 <TextView
                     android:id="@+id/days_left"
@@ -75,6 +75,7 @@
                     android:textColor="@android:color/darker_gray" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="wrap_content"

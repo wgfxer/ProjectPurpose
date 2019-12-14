@@ -68,7 +68,7 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
             getSupportActionBar().setTitle(R.string.edit_purpose);
         } else {
             purpose = new Purpose();
-            if(savedInstanceState != null){
+            if (savedInstanceState != null) {
                 updateUIFromState(savedInstanceState);
             }
         }
@@ -96,11 +96,11 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
             @Override
             public void onChanged(@Nullable Purpose purpose) {
                 AddPurposeActivity.this.purpose = purpose;
-                if(savedInstanceState == null){
+                if (savedInstanceState == null) {
                     if (purpose != null) {
                         updateUI();
                     }
-                }else{
+                } else {
                     updateUIFromState(savedInstanceState);
                 }
             }
@@ -118,18 +118,18 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
 
     private void updateUIFromState(Bundle savedInstanceState) {
         String purposeTitle = savedInstanceState.getString(KEY_PURPOSE_TITLE);
-        Date purposeDate = (Date)savedInstanceState.getSerializable(KEY_PURPOSE_DATE);
+        Date purposeDate = (Date) savedInstanceState.getSerializable(KEY_PURPOSE_DATE);
         String purposeImagePath = savedInstanceState.getString(KEY_PURPOSE_IMAGE_PATH);
 
         purposeTitleEditText.setText(purposeTitle);
         purpose.setDate(purposeDate);
         purpose.getTheme().setImagePath(purposeImagePath);
 
-        if(purposeDate != null){
+        if (purposeDate != null) {
             selectDateButton.setText(Utils.getStringFromDate(purposeDate));
         }
 
-        if(purposeImagePath != null){
+        if (purposeImagePath != null) {
             pickImageButton.setText(R.string.change_image_text);
         }
     }
@@ -244,8 +244,8 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_PURPOSE_TITLE,purposeTitleEditText.getText().toString());
-        outState.putSerializable(KEY_PURPOSE_DATE,purpose.getDate());
-        outState.putString(KEY_PURPOSE_IMAGE_PATH,purpose.getTheme().getImagePath());
+        outState.putString(KEY_PURPOSE_TITLE, purposeTitleEditText.getText().toString());
+        outState.putSerializable(KEY_PURPOSE_DATE, purpose.getDate());
+        outState.putString(KEY_PURPOSE_IMAGE_PATH, purpose.getTheme().getImagePath());
     }
 }

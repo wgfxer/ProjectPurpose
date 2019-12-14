@@ -1,10 +1,5 @@
 package com.wgfxer.projectpurpose.presentation.view.purposeinfo.reportsfragment;
 
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +11,6 @@ import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.models.data.Purpose;
-import com.wgfxer.projectpurpose.models.domain.PurposeTheme;
 import com.wgfxer.projectpurpose.models.domain.Report;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
@@ -26,7 +20,6 @@ import java.util.Calendar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
