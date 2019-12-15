@@ -9,6 +9,9 @@ import java.util.List;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+/**
+ * MainViewModel, в методах вызывает методы интерфейса IPurposesRepository
+ */
 public class MainViewModel extends ViewModel {
 
     private IPurposesRepository repository;

@@ -18,6 +18,9 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Диалог для изменения темы цели
+ */
 public class EditThemeDialogFragment extends DialogFragment {
     private static final String EXTRA_IMAGE_PATH = "image_path";
     private static final String EXTRA_GRADIENT_ID = "gradient_id";
@@ -26,6 +29,9 @@ public class EditThemeDialogFragment extends DialogFragment {
 
     private OnThemeChangeListener onThemeChangeListener;
 
+    /**
+     * интерфейса для слушания события при нажатии на кнопку готово
+     */
     interface OnThemeChangeListener {
         void onThemeChange(PurposeTheme theme);
     }
@@ -90,7 +96,7 @@ public class EditThemeDialogFragment extends DialogFragment {
         isWhiteFontCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                purposeTheme.setWhiteFont(isWhiteFontCheckBox.isChecked());         //возможна ошибка
+                purposeTheme.setWhiteFont(isWhiteFontCheckBox.isChecked());
             }
         });
 
@@ -115,6 +121,9 @@ public class EditThemeDialogFragment extends DialogFragment {
                 .create();
     }
 
+    /**
+     * создает и возвращает экземпляр фрагмента для заданной темы
+     */
     public static EditThemeDialogFragment newInstance(PurposeTheme theme) {
         Bundle args = new Bundle();
         args.putString(EXTRA_IMAGE_PATH, theme.getImagePath());

@@ -10,6 +10,9 @@ import com.wgfxer.projectpurpose.R;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Адаптер для recyclerView c градиентами
+ */
 public class GradientsAdapter extends RecyclerView.Adapter<GradientsAdapter.GradientsViewHolder> {
     private int[] gradients;
     private OnGradientClickListener onGradientClickListener;
@@ -68,6 +71,9 @@ public class GradientsAdapter extends RecyclerView.Adapter<GradientsAdapter.Grad
         }
     }
 
+    /**
+     * интерфейс для обработки клика на градиент
+     */
     interface OnGradientClickListener {
         void onGradientClick(int gradientResourceId);
     }

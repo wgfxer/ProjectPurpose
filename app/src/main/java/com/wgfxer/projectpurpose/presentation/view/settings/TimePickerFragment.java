@@ -16,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * ДиалогФрагмент для выбора времени напоминания
+ */
 public class TimePickerFragment extends DialogFragment {
 
     private static final String KEY_HOURS = "KEY_HOURS";
@@ -27,6 +30,9 @@ public class TimePickerFragment extends DialogFragment {
         this.onTimeSetListener = onTimeSetListener;
     }
 
+    /**
+     * интерфейс для прослушивания события установки времени
+     */
     interface OnTimeSetListener {
         void onTimeSet(int hours, int minutes);
     }
@@ -34,7 +40,6 @@ public class TimePickerFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Log.i("MYTAG", "MYTAG1");
         View view = LayoutInflater.from(getContext()).inflate(R.layout.time_picker, null, false);
         final TimePicker timePicker = view.findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
@@ -69,6 +74,9 @@ public class TimePickerFragment extends DialogFragment {
                 }).create();
     }
 
+    /**
+     * Создает и возвращает экземпляр диалога в зависимости от уже выбранного времени
+     */
     public static TimePickerFragment newInstance(int hours, int minutes) {
         Bundle args = new Bundle();
         args.putInt(KEY_HOURS, hours);

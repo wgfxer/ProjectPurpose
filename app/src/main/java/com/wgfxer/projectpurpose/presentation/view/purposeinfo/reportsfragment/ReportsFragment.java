@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
+import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.models.domain.Report;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
@@ -24,6 +25,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+/**
+ * Фрагмент содержащий календарь с отчетами и сам отчет по выбранной или кнопку для добавления
+ */
 public class ReportsFragment extends Fragment {
     private static final String KEY_PICKED_DATE = "KEY_PICKED_DATE";
     private static final String KEY_PURPOSE_ID = "KEY_PURPOSE_ID";
@@ -56,7 +60,7 @@ public class ReportsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         findViews(view);
-        selectedDate = getIndependentTime(calendarView.getDate());
+        selectedDate = Utils.getIndependentTime(calendarView.getDate());
         calendarView.setMaxDate(System.currentTimeMillis());
         observeViewModel();
         setListeners();
@@ -66,12 +70,18 @@ public class ReportsFragment extends Fragment {
         }
     }
 
+    /**
+     * Сохранение состояния выбранной даты
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(KEY_PICKED_DATE, selectedDate);
     }
 
+    /**
+     * возвращает новый экземпляр фрагмента для конкретной цели
+     */
     public static ReportsFragment newInstance(int id) {
         Bundle args = new Bundle();
         args.putInt(KEY_PURPOSE_ID, id);
@@ -80,6 +90,9 @@ public class ReportsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Находит все нужные view в заданном view
+     */
     private void findViews(@NonNull View view) {
         calendarView = view.findViewById(R.id.calendar_view_reports);
         reportTitleTextView = view.findViewById(R.id.text_view_report_title);
@@ -91,6 +104,10 @@ public class ReportsFragment extends Fragment {
         cardViewReport = view.findViewById(R.id.card_view_report);
     }
 
+    /**
+     * подписка на вьюмодель
+     * после подписки отображает текущий отчет
+     */
     private void observeViewModel() {
         viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
                 .get(MainViewModel.class);
@@ -103,6 +120,9 @@ public class ReportsFragment extends Fragment {
         });
     }
 
+    /**
+     * устанавливает слушатели на календарь, кнопку изменения и кнопку добавления отчета
+     */
     private void setListeners() {
         editReportImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,28 +164,25 @@ public class ReportsFragment extends Fragment {
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                selectedDate = getIndependentTime(calendar.getTimeInMillis());
+                selectedDate = Utils.getIndependentTime(calendar.getTimeInMillis());
                 showCurrentReport();
             }
         });
     }
 
-    private long getIndependentTime(long time) {
-        Calendar calendarResult = Calendar.getInstance();
-        calendarResult.setTimeInMillis(0);
-        Calendar calendarFromView = Calendar.getInstance();
-        calendarFromView.setTimeInMillis(time);
-        calendarResult.set(Calendar.YEAR, calendarFromView.get(Calendar.YEAR));
-        calendarResult.set(Calendar.MONTH, calendarFromView.get(Calendar.MONTH));
-        calendarResult.set(Calendar.DAY_OF_MONTH, calendarFromView.get(Calendar.DAY_OF_MONTH));
-        return calendarResult.getTimeInMillis();
-    }
 
+
+    /**
+     * добавляет отчет в цель
+     */
     private void addReport(Report report) {
         purpose.getReportsList().add(report);
         viewModel.updatePurpose(purpose);
     }
 
+    /**
+     * сохраняет уже созданный отчет у цели
+     */
     private void saveReport(Report report) {
         for (int i = 0; i < purpose.getReportsList().size(); i++) {
             if (purpose.getReportsList().get(i).getDateReport() == report.getDateReport()) {
@@ -175,6 +192,9 @@ public class ReportsFragment extends Fragment {
         }
     }
 
+    /**
+     * отображает текущий отчет по дате, если отчета нет показывает кнопку для добавления
+     */
     private void showCurrentReport() {
         report = getReportBySelectedDate();
         if (report != null) {
@@ -185,7 +205,10 @@ public class ReportsFragment extends Fragment {
         }
     }
 
-    private Report getReportBySelectedDate() {
+    /**
+     * ищет отчет в цели, если его нет возвращает null
+     */
+    private @Nullable Report getReportBySelectedDate() {
         Report report = null;
         for (Report rep : purpose.getReportsList()) {
             if (rep.getDateReport() == selectedDate) {
@@ -195,6 +218,10 @@ public class ReportsFragment extends Fragment {
         return report;
     }
 
+    /**
+     * Скрывает кнопку добавления и отображает отчет
+     * @param report отчет для отображения
+     */
     private void showReport(Report report) {
         createReportButton.setVisibility(View.INVISIBLE);
         cardViewReport.setVisibility(View.VISIBLE);

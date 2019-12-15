@@ -9,6 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+/**
+ * Фабрика для создания вьюМодели
+ * устанавливает реализацию репозитория
+ */
 public class MainViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final Context applicationContext;
 

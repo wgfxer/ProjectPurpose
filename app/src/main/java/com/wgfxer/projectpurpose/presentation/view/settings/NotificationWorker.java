@@ -19,6 +19,9 @@ import androidx.work.WorkerParameters;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
+/**
+ * Воркер для работы с уведомлениями
+ */
 public class NotificationWorker extends Worker {
     private static final int NOTIFICATION_ID = 13;
     private String NOTIFICATION_REPORT_CHANNEL = "Notification report channel";
@@ -27,6 +30,10 @@ public class NotificationWorker extends Worker {
         super(context, workerParams);
     }
 
+    /**
+     * работа состоит в том,что он создает канал и показывает уведомление
+     * @return
+     */
     @NonNull
     @Override
     public Result doWork() {
@@ -36,6 +43,9 @@ public class NotificationWorker extends Worker {
         return Result.success();
     }
 
+    /**
+     * создание канала нотификаций для определенных апи
+     */
     private void createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel =
@@ -50,6 +60,9 @@ public class NotificationWorker extends Worker {
         }
     }
 
+    /**
+     * создание и отображение уведомления
+     */
     private void showNotification() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent =

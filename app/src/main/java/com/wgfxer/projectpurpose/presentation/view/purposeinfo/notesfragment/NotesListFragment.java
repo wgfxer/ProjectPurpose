@@ -19,6 +19,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
+/**
+ * Фрагмент содержащий ViewPager с заметками
+ */
 public class NotesListFragment extends Fragment {
 
     private static final String KEY_CURRENT_PAGE = "KEY_CURRENT_PAGE";
@@ -74,6 +77,9 @@ public class NotesListFragment extends Fragment {
         }
     }
 
+    /**
+     * сохранение заметок
+     */
     @Override
     public void onPause() {
         super.onPause();
@@ -81,12 +87,22 @@ public class NotesListFragment extends Fragment {
         viewModel.updatePurpose(purpose);
     }
 
+
+    /**
+     * Сохранение состояние(открытая страница)
+     * @param outState
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_CURRENT_PAGE, notesViewPager.getCurrentItem());
     }
 
+    /**
+     * Создает и возвращает экземпляр фрагмента с заметками для конкретной цели
+     * @param purposeId
+     * @return
+     */
     public static NotesListFragment newInstance(int purposeId) {
 
         Bundle args = new Bundle();

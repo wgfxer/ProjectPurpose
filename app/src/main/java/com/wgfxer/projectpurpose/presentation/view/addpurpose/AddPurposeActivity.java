@@ -33,6 +33,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+/**
+ * Активность для добавления или изменения цели
+ */
 public class AddPurposeActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialogFragment.OnDateSetListener {
     private static final String KEY_PURPOSE_ID = "PURPOSE_ID";
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -90,6 +93,10 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         doneButton.setOnClickListener(this);
     }
 
+    /**
+     * Подписать на вьюМодель
+     * @param savedInstanceState нужен для того,чтобы при повороте отобразить сохраненные значения после инициализации цели
+     */
     private void observeViewModel(final Bundle savedInstanceState) {
         LiveData<Purpose> purposeLiveData = viewModel.getPurposeById(id);
         purposeLiveData.observe(this, new Observer<Purpose>() {
@@ -107,6 +114,9 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
+    /**
+     * обновляет UI в соответсвии с переданной в активность целью
+     */
     private void updateUI() {
         purposeTitleEditText.setText(purpose.getTitle());
         purposeTitleEditText.setSelection(purposeTitleEditText.getText().length());
@@ -116,6 +126,10 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**
+     * обновляет UI из сохраненного состояния
+     * @param savedInstanceState сохраненное состояние из которого берем значения
+     */
     private void updateUIFromState(Bundle savedInstanceState) {
         String purposeTitle = savedInstanceState.getString(KEY_PURPOSE_TITLE);
         Date purposeDate = (Date) savedInstanceState.getSerializable(KEY_PURPOSE_DATE);
@@ -135,6 +149,10 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
     }
 
 
+    /**
+     * обработка нажатий на кнопки
+     * @param view кнопки - готово, выбрать дату и выбрать фото
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -170,11 +188,20 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**
+     * Запускает интент для выбора изображения
+     */
     void startIntentPickImage() {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
 
+    /**
+     * После выбора изображения попадаем сюда
+     * @param requestCode код запроса
+     * @param resultCode код резульатат
+     * @param data содержит данные о выбранном изображении
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -192,6 +219,13 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+
+    /**
+     * Колбэк после запроса разрешения на чтение данных
+     * @param requestCode код запроса
+     * @param permissions массив с запрошенными разрешениями
+     * @param grantResults  массив с результатами запросов
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_READ_EXTERNAL_REQUEST) {
@@ -201,6 +235,9 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    /**
+     * обработка нажатия кнопки назад
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -211,6 +248,10 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * проверка названия и даты цели на пустоту, если что-то пустое запускаем анимацию
+     * @return пусты ли поля или нет
+     */
     private boolean isFieldsEmpty() {
         if (purposeTitleEditText.getText().toString().trim().isEmpty()) {
             purposeLL.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shaking));
@@ -225,22 +266,35 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         return false;
     }
 
+    /**
+     * создает и возвращает интент для изменения цели
+     */
     public static Intent editPurpose(Context context, int id) {
         Intent intent = new Intent(context, AddPurposeActivity.class);
         intent.putExtra(KEY_PURPOSE_ID, id);
         return intent;
     }
 
+    /**
+     * Создает и возвращает интент для создания цели
+     */
     public static Intent newPurpose(Context context) {
         return new Intent(context, AddPurposeActivity.class);
     }
 
+    /**
+     * Вызывается после того как была выбрана дата в диалоге
+     * @param date выбранная даат
+     */
     @Override
     public void onDateSet(Date date) {
         purpose.setDate(date);
         selectDateButton.setText(Utils.getStringFromDate(date));
     }
 
+    /**
+     * сохранение состояния
+     */
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

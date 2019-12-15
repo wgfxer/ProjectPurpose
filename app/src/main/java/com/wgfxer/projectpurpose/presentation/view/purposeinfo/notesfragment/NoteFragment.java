@@ -15,6 +15,10 @@ import com.wgfxer.projectpurpose.models.domain.Note;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
+/**
+ * Фрагмент для отображения одной заметки для ViewPager
+ */
 public class NoteFragment extends Fragment {
     private static final String EXTRA_NOTE_TITLE_RES_ID = "note_title_res_id";
     private static final String EXTRA_NOTE_BODY = "note_body";
@@ -64,6 +68,12 @@ public class NoteFragment extends Fragment {
         });
     }
 
+    /**
+     * создает и возвращает экземпляр фрагмента с заметкой
+     * @param note заполняет view этой заметкой
+     * @param onNoteChangedListener устанавливает слушатель на изменение
+     * @return возвращает экземпляр
+     */
     public static NoteFragment newInstance(Note note, OnNoteChangedListener onNoteChangedListener) {
 
         Bundle args = new Bundle();
@@ -76,6 +86,9 @@ public class NoteFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * интерфейс для прослушивания осбытия изменения заметки
+     */
     interface OnNoteChangedListener {
         void onNoteChanged(String body);
     }

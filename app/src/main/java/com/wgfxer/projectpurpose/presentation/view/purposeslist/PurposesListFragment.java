@@ -27,7 +27,10 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
+/**
+ * Фрагмент со списком целей
+ * Может быть в режиме будущие цели или выполненные цели
+ */
 public class PurposesListFragment extends Fragment {
 
     public static final int MODE_FUTURE_PURPOSES = 1;

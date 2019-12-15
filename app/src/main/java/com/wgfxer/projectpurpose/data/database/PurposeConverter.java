@@ -15,6 +15,10 @@ import java.util.List;
 
 import androidx.room.TypeConverter;
 
+
+/**
+ * TypeConverter для полей Purpose
+ */
 public class PurposeConverter {
     private static final String KEY_IMAGE_PATH = "image_path";
     private static final String KEY_GRADIENT_ID = "gradient_id";
@@ -30,6 +34,12 @@ public class PurposeConverter {
     private static final String KEY_REPORT_DID_GOOD = "key_report_did_good";
     private static final String KEY_REPORT_COULD_BETTER = "key_report_could_better";
 
+
+    /**
+     * Конвертирует из типа PurposeTheme в String
+     * @param theme конвертируемая тема
+     * @return String представление темы(в формате JSON)
+     */
     @TypeConverter
     public String fromTheme(PurposeTheme theme) {
         JSONObject jsonObject = new JSONObject();
@@ -48,6 +58,12 @@ public class PurposeConverter {
         return jsonObject.toString();
     }
 
+
+    /**
+     * Конвертирует из String(JSON) в PurposeTheme
+     * @param themeString строка в виде JSON, содержит в себе PurposeTheme
+     * @return конвертированную PurposeTheme
+     */
     @TypeConverter
     public PurposeTheme toTheme(String themeString) {
         PurposeTheme purposeTheme = new PurposeTheme();
@@ -66,16 +82,31 @@ public class PurposeConverter {
         return purposeTheme;
     }
 
+    /**
+     * конвертирует из date в long
+     * @param date дата в виде Date
+     * @return дата в виде long
+     */
     @TypeConverter
     public long fromDate(Date date) {
         return date.getTime();
     }
 
+    /**
+     * конвертирует из long timeMillis  в Date
+     * @param dateLong дата в виде long
+     * @return дата в виде Date
+     */
     @TypeConverter
     public Date toDate(long dateLong) {
         return new Date(dateLong);
     }
 
+    /**
+     * конвертирует лист объектов типа Note в String JSON
+     * @param notesList конвертируемый лист
+     * @return конвертированный в String JSON лист
+     */
     @TypeConverter
     public String fromListNotes(List<Note> notesList) {
         JSONArray jsonArrayListNotes = new JSONArray();
@@ -97,6 +128,11 @@ public class PurposeConverter {
         return jsonArrayListNotes.toString();
     }
 
+    /**
+     * Конвертирует из String JSON в List<Note
+     * @param source String представление List<Note> в формате JSON
+     * @return конвертированный список с заметками
+     */
     @TypeConverter
     public List<Note> toListNotes(String source) {
         List<Note> notesList = new ArrayList<>();
@@ -119,8 +155,13 @@ public class PurposeConverter {
         return notesList;
     }
 
+    /**
+     * Конвертирует List отчетов в строку в формате JSON
+     * @param reports конвертируемый лист с отчетами
+     * @return конвертированный в строку в формате JSON лист
+     */
     @TypeConverter
-    public String fromArrayListReports(List<Report> reports) {
+    public String fromListReports(List<Report> reports) {
         JSONArray jsonArrayListReports = new JSONArray();
         for (Report report : reports) {
             JSONObject jsonObjectReport = new JSONObject();
@@ -157,8 +198,13 @@ public class PurposeConverter {
         return jsonArrayListReports.toString();
     }
 
+    /**
+     * Конвертирует из строки формата JSON в List с отчетами
+     * @param source строка в формате JSON которая содержит лист с отчетами
+     * @return конвертированный лист с отчетами
+     */
     @TypeConverter
-    public List<Report> toArrayListReports(String source) {
+    public List<Report> toListReports(String source) {
         List<Report> reportsList = new ArrayList<>();
         try {
             JSONArray jsonArrayListReports = new JSONArray(source);

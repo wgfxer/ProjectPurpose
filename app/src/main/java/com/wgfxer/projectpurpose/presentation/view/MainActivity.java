@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+/**
+ * Главная активность, содержащая navbottom и способная переключатся между фрагментами с целями и настройками
+ */
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
@@ -53,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Отобразить фрагмент
+     * @param fragment фрагмент для отображения
+     */
     private void showFragment(Fragment fragment) {
         fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out).replace(R.id.fragment_container, fragment).commit();
     }

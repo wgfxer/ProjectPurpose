@@ -22,6 +22,7 @@
     <string name="delete_purpose">Удалить</string>
     <string name="edit_purpose_menu">Редактировать</string>
     <string name="share_purpose_message">Хочу поделиться своей целью! %1$s до %2$s</string>
+    <string name="share_done_purpose_message">Выполнил свою цель! %1$s до %2$s</string>
     <string name="share_purpose">Поделиться</string>
     <string name="photo_hint">Фото</string>
     <string name="take_photo">Выбрать фото</string>

@@ -15,6 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+/**
+ * Диалог для создания и изменения отчета
+ */
 public class EditReportDialog extends DialogFragment {
 
     private static final String KEY_REPORT_DATE = "KEY_REPORT_DATE";
@@ -35,9 +38,17 @@ public class EditReportDialog extends DialogFragment {
     private EditText reportCouldBetterEditText;
     private long reportDate;
 
+
+    /**
+     * Интерфейс для слушания события изменения отчета или добавления нового отчета
+     */
     interface OnEditReportListener {
+        /**
+         * вызывается после нажатия на кнопку готово в диалоге
+         */
         void onEditReport(Report report);
     }
+
 
     void setOnEditReportListener(OnEditReportListener onEditReportListener) {
         this.onEditReportListener = onEditReportListener;
@@ -78,6 +89,9 @@ public class EditReportDialog extends DialogFragment {
                 .create();
     }
 
+    /**
+     * заполняет edittext'ы если редактирование отчета
+     */
     private void fillViews() {
         reportDate = getArguments().getLong(KEY_REPORT_DATE);
         reportTitleEditText.setText(getArguments().getString(KEY_REPORT_TITLE, null));
@@ -86,6 +100,10 @@ public class EditReportDialog extends DialogFragment {
         reportCouldBetterEditText.setText(getArguments().getString(KEY_REPORT_COULD_BETTER, null));
     }
 
+    /**
+     * находит все элементы во view
+     * @param view в которой нужно найти элементы
+     */
     private void findViews(View view) {
         reportTitleEditText = view.findViewById(R.id.edit_text_title);
         reportDescriptionEditText = view.findViewById(R.id.edit_text_description);
@@ -93,6 +111,10 @@ public class EditReportDialog extends DialogFragment {
         reportCouldBetterEditText = view.findViewById(R.id.edit_text_could_better);
     }
 
+    /**
+     * по текущему моду возвращает строку с заголовком диалога
+     * @return строку с title
+     */
     private String getTitle() {
         int mode = getArguments().getInt(KEY_MODE);
         String title = null;

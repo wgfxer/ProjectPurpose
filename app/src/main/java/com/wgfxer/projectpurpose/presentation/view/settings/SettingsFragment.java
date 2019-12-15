@@ -12,6 +12,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
+import com.wgfxer.projectpurpose.helper.Utils;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -25,6 +26,9 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 
+/**
+ * Фрагмент с настройками
+ */
 public class SettingsFragment extends Fragment {
 
     private static final String WORK_TAG = "NOTIFICATION_WORK";
@@ -33,7 +37,6 @@ public class SettingsFragment extends Fragment {
     private static final String KEY_NOTIFICATION_HOURS = "KEY_NOTIFICATION_HOURS";
     private static final String KEY_NOTIFICATION_MINUTES = "KEY_NOTIFICATION_MINUTES";
 
-    private static final long ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
 
     private SharedPreferences preferences;
 
@@ -74,31 +77,29 @@ public class SettingsFragment extends Fragment {
     }
 
 
+    /**
+     * Останавливает работу которая вызывает напоминание, если напоминания отключил пользователь
+     * или если он меняет время напоминания
+     */
     private void cancelWork() {
         WorkManager.getInstance(getContext()).cancelAllWorkByTag(WORK_TAG);
     }
 
+    /**
+     * начинает новую работу с напоминанием в зависимости от времени установленного пользователем
+     */
     private void beginNewWork() {
         PeriodicWorkRequest notificationsWork = new PeriodicWorkRequest.Builder(NotificationWorker.class,
-                ONE_DAY_IN_MILLIS + 1, TimeUnit.MILLISECONDS, ONE_DAY_IN_MILLIS, TimeUnit.MILLISECONDS)
-                .setInitialDelay(getMillisUntilNext(), TimeUnit.MILLISECONDS)
+                Utils.ONE_DAY_IN_MILLIS + 2, TimeUnit.MILLISECONDS, Utils.ONE_DAY_IN_MILLIS, TimeUnit.MILLISECONDS)
+                .setInitialDelay(Utils.getMillisUntilNext(notificationHours,notificationMinutes), TimeUnit.MILLISECONDS)
                 .addTag(WORK_TAG)
                 .build();
         WorkManager.getInstance(getContext()).enqueue(notificationsWork);
     }
 
-    private long getMillisUntilNext() {
-        long currentTimeInMillis = System.currentTimeMillis();
-        Calendar calendar = Calendar.getInstance(Locale.getDefault());
-        calendar.set(Calendar.HOUR_OF_DAY, notificationHours);
-        calendar.set(Calendar.MINUTE, notificationMinutes);
-        if (calendar.getTimeInMillis() - currentTimeInMillis > 0) {
-            return calendar.getTimeInMillis() - currentTimeInMillis;
-        } else {
-            return calendar.getTimeInMillis() - currentTimeInMillis + ONE_DAY_IN_MILLIS;
-        }
-    }
-
+    /**
+     * метод для включения вью с выбором времени(включается когда свитч включен и выключается когда выключен)
+     */
     private void enableViewNotificationTime() {
         notificationsTimeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,11 +123,17 @@ public class SettingsFragment extends Fragment {
         notificationsTimeTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
 
+    /**
+     * выключение вью с выбором времени напоминания
+     */
     private void disableViewNotificationTime() {
         notificationsTimeTextView.setEnabled(false);
         notificationsTimeTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorDisabled));
     }
 
+    /**
+     * берет значения из преференсов и устанавливает ui
+     */
     private void updateUiFromPreferences() {
         isNotificationsEnabled = preferences.getBoolean(KEY_NOTIFICATIONS_ENABLED, false);
         notificationHours = preferences.getInt(KEY_NOTIFICATION_HOURS, 21);
@@ -141,6 +148,11 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+    /**
+     * устанавливает в преференсы
+     * @param hours час напоминаия
+     * @param minutes минута напоминания
+     */
     private void putTime(int hours, int minutes) {
         preferences.edit()
                 .putInt(KEY_NOTIFICATION_HOURS, hours)
@@ -148,6 +160,10 @@ public class SettingsFragment extends Fragment {
                 .apply();
     }
 
+    /**
+     * устанавливает преференсы
+     * @param isNotificationEnabled включены ли напоминания
+     */
     private void putIsNotificationEnabled(boolean isNotificationEnabled) {
         preferences.edit()
                 .putBoolean(KEY_NOTIFICATIONS_ENABLED, isNotificationEnabled)

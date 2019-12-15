@@ -2,11 +2,29 @@ package com.wgfxer.projectpurpose.models.domain;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Модель отчета по цели
+ */
 public class Report {
+    /**
+     * дата по которой сделан отчет
+     */
     private long dateReport;
+    /**
+     * название отчета
+     */
     private String titleReport;
+    /**
+     * описание отчета
+     */
     private String descriptionReport;
+    /**
+     * что сделал хорошо в этот день
+     */
     private String whatDidGood;
+    /**
+     * что можно было сделать лучше в этот день
+     */
     private String whatCouldBetter;
 
     public Report() {

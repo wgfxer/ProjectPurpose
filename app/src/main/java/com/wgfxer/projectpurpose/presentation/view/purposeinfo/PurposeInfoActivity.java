@@ -38,6 +38,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+
+/**
+ * Активность для отображения детализации по цели(заметки,отчеты)
+ */
 public class PurposeInfoActivity extends AppCompatActivity implements EditThemeDialogFragment.OnThemeChangeListener {
     private static final String KEY_PURPOSE_ID = "PURPOSE_ID";
     private static final String KEY_SELECTED_MODE = "SELECTED_MODE";
@@ -77,12 +81,18 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         }
     }
 
+    /**
+     *  создает и возвращает интент для перехода к активности с передачей id цели
+     */
     public static Intent newIntent(Context context, int id) {
         Intent intent = new Intent(context, PurposeInfoActivity.class);
         intent.putExtra(KEY_PURPOSE_ID, id);
         return intent;
     }
 
+    /**
+     *  заполнение меню
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
@@ -90,6 +100,9 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         return true;
     }
 
+    /**
+     * обработка нажатий на меню(назад, изменить,поделиться)
+     * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -126,12 +139,18 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * отмечает цель выполненной
+     */
     private void checkPurposeDone() {
         purpose.setDone(!purpose.isDone());
         setDonePurposeItemTitle();
         viewModel.updatePurpose(purpose);
     }
 
+    /**
+     * изменяет title у элемента меню в зависимости от того выполнена она или нет
+     */
     private void setDonePurposeItemTitle() {
         if (purpose.isDone()) {
             menu.findItem(R.id.check_purpose_done).setTitle(R.string.uncheck_done_text);
@@ -140,12 +159,19 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         }
     }
 
+    /**
+     * колбэк при изменении темы
+     * @param theme новая тема
+     */
     @Override
     public void onThemeChange(PurposeTheme theme) {
         purpose.setTheme(theme);
         viewModel.updatePurpose(purpose);
     }
 
+    /**
+     * находит все вью и устанавливает лисенеры
+     */
     private void setUpViews() {
         purposeTitleTextView = findViewById(R.id.purpose_title_text_view);
         toolbarImage = findViewById(R.id.toolbar_image);
@@ -181,6 +207,10 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         });
     }
 
+    /**
+     * меняет режим просмотра(заметки или отчеты)
+     * @param mode константа для отчетов или для заметок
+     */
     private void switchMode(int mode) {
         if (mode == SELECTED_MODE_NOTES) {
             showNotesButton.setTextColor(Color.BLACK);
@@ -193,6 +223,9 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         }
     }
 
+    /**
+     * подписка на вьюмодель,при изменении цели обновление ui
+     */
     private void observeViewModel() {
         viewModel = ViewModelProviders.of(this, new MainViewModelFactory(this))
                 .get(MainViewModel.class);
@@ -210,6 +243,9 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     }
 
 
+    /**
+     * устанавливает информацию о цели во все вью
+     */
     private void updateUI() {
         purposeTitleTextView.setText(purpose.getTitle());
         toolbarGradient.setImageResource(purpose.getTheme().getGradientId());
@@ -251,12 +287,18 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     }
 
+    /**
+     * для корректного отображения элемента меню(отметить выполненной или не выполненной)
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         setDonePurposeItemTitle();
         return super.onPrepareOptionsMenu(menu);
     }
 
+    /**
+     * запускает интент для добавления цели в календарь
+     */
     private void addPurposeInCalendar() {
         Intent addPurposeInCalendarIntent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
@@ -266,6 +308,9 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         startActivity(addPurposeInCalendarIntent);
     }
 
+    /**
+     * Показывает диалог для удаления цели
+     */
     private void showDialogDeletePurpose() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setPositiveButton(R.string.dialog_ok_text, new DialogInterface.OnClickListener() {
@@ -287,15 +332,28 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         dialog.show();
     }
 
+    /**
+     * запускает интент поделиться целью, в зависимости от того выполнена или нет - разный текст
+     * @param purpose
+     */
     private void sharePurpose(Purpose purpose) {
-        String share_text = getString(R.string.share_purpose_message, purpose.getTitle(), Utils.getStringFromDate(purpose.getDate()));
+        String shareText = null;
+        if(!purpose.isDone()){
+            shareText = getString(R.string.share_purpose_message, purpose.getTitle(), Utils.getStringFromDate(purpose.getDate()));
+        }else{
+            shareText = getString(R.string.share_done_purpose_message, purpose.getTitle(), Utils.getStringFromDate(purpose.getDate()));
+        }
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, share_text);
+        intent.putExtra(Intent.EXTRA_TEXT, shareText);
         intent = Intent.createChooser(intent, getString(R.string.share_purpose));
         startActivity(intent);
     }
 
+    /**
+     * сохранение выбранного мода
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

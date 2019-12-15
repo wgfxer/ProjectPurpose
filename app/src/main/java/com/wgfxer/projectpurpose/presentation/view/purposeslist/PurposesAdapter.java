@@ -18,6 +18,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Адаптер для отображения списка целей
+ */
 public class PurposesAdapter extends RecyclerView.Adapter<PurposesAdapter.PurposesHolder> {
     private List<Purpose> purposesList = new ArrayList<>();
     private OnPurposeClickListener onPurposeClickListener;
@@ -67,6 +70,7 @@ public class PurposesAdapter extends RecyclerView.Adapter<PurposesAdapter.Purpos
             imageViewGradient = itemView.findViewById(R.id.image_view_gradient);
         }
 
+
         void bind(final Purpose purpose) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,6 +114,9 @@ public class PurposesAdapter extends RecyclerView.Adapter<PurposesAdapter.Purpos
     }
 
 
+    /**
+     * интерфейс для прослушивания события клика по карточке с целью
+     */
     interface OnPurposeClickListener {
         void onPurposeClick(Purpose purpose);
     }

@@ -10,6 +10,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 
+/**
+ * Адаптер для ViewPager с заметками
+ */
 class NotesAdapter extends FragmentPagerAdapter {
 
     private List<Note> notesList;
@@ -18,6 +21,7 @@ class NotesAdapter extends FragmentPagerAdapter {
         super(fm);
         this.notesList = new ArrayList<>();
     }
+
 
     void setNotesList(List<Note> notesList) {
         this.notesList = notesList;

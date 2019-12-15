@@ -20,19 +20,28 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 
+/**
+ * диалог для выбора даты цели
+ */
 public class DatePickerDialogFragment extends DialogFragment {
     private static final String KEY_PURPOSE_DATE = "PURPOSE_DATE";
 
     private OnDateSetListener onDateSetListener;
 
+    /**
+     * интерфейс для прослушивания события установки даты
+     */
     interface OnDateSetListener {
         void onDateSet(Date date);
     }
 
+
+    /**
+     * настройка отображения диалога
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Log.i("MYTAG", "MYTAG2");
         if (getActivity() instanceof OnDateSetListener) {
             onDateSetListener = (OnDateSetListener) getActivity();
         }
@@ -66,6 +75,11 @@ public class DatePickerDialogFragment extends DialogFragment {
                 .create();
     }
 
+    /**
+     * создает и возвращает новый экземпляр фрагмента
+     * @param date уже выбранная дата, может быть null, если не была установлена
+     * @return экземпляр
+     */
     public static DatePickerDialogFragment newInstance(@Nullable Date date) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(KEY_PURPOSE_DATE, date);

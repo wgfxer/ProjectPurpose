@@ -4,10 +4,25 @@ import com.wgfxer.projectpurpose.R;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Тема цели
+ */
 public class PurposeTheme {
+    /**
+     * путь к изображению
+     */
     private String imagePath;
+    /**
+     * id ресурса градиента темы
+     */
     private int gradientId;
+    /**
+     * прозрачность градиента
+     */
     private float gradientAlpha;
+    /**
+     * белые ли буквы в теме
+     */
     private boolean isWhiteFont;
 
     public PurposeTheme() {

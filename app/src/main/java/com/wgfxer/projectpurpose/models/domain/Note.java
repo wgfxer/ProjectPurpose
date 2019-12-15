@@ -2,9 +2,22 @@ package com.wgfxer.projectpurpose.models.domain;
 
 import androidx.annotation.NonNull;
 
+/**
+ * Модель заметки
+ */
 public class Note {
+    /**
+     * id строкового ресурса с названием заметки
+     */
     private int titleResourceId;
+    /**
+     * тело заметки,то что изменяет пользователь
+     */
     private String body;
+
+    /**
+     * подсказка по заметке
+     */
     private int hintResourceId;
 
     public Note() {

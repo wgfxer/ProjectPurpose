@@ -7,6 +7,10 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
+
+/**
+ * интерфейс репозитория, реализует PurposesRepository
+ */
 public interface IPurposesRepository {
     LiveData<List<Purpose>> getAllPurposes();
 
