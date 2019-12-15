@@ -70,7 +70,8 @@ public class NoteFragment extends Fragment {
 
     /**
      * создает и возвращает экземпляр фрагмента с заметкой
-     * @param note заполняет view этой заметкой
+     *
+     * @param note                  заполняет view этой заметкой
      * @param onNoteChangedListener устанавливает слушатель на изменение
      * @return возвращает экземпляр
      */

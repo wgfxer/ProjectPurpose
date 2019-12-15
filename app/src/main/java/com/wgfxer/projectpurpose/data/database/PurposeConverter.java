@@ -37,6 +37,7 @@ public class PurposeConverter {
 
     /**
      * Конвертирует из типа PurposeTheme в String
+     *
      * @param theme конвертируемая тема
      * @return String представление темы(в формате JSON)
      */
@@ -61,6 +62,7 @@ public class PurposeConverter {
 
     /**
      * Конвертирует из String(JSON) в PurposeTheme
+     *
      * @param themeString строка в виде JSON, содержит в себе PurposeTheme
      * @return конвертированную PurposeTheme
      */
@@ -84,6 +86,7 @@ public class PurposeConverter {
 
     /**
      * конвертирует из date в long
+     *
      * @param date дата в виде Date
      * @return дата в виде long
      */
@@ -94,6 +97,7 @@ public class PurposeConverter {
 
     /**
      * конвертирует из long timeMillis  в Date
+     *
      * @param dateLong дата в виде long
      * @return дата в виде Date
      */
@@ -104,6 +108,7 @@ public class PurposeConverter {
 
     /**
      * конвертирует лист объектов типа Note в String JSON
+     *
      * @param notesList конвертируемый лист
      * @return конвертированный в String JSON лист
      */
@@ -130,6 +135,7 @@ public class PurposeConverter {
 
     /**
      * Конвертирует из String JSON в List<Note
+     *
      * @param source String представление List<Note> в формате JSON
      * @return конвертированный список с заметками
      */
@@ -157,6 +163,7 @@ public class PurposeConverter {
 
     /**
      * Конвертирует List отчетов в строку в формате JSON
+     *
      * @param reports конвертируемый лист с отчетами
      * @return конвертированный в строку в формате JSON лист
      */
@@ -200,6 +207,7 @@ public class PurposeConverter {
 
     /**
      * Конвертирует из строки формата JSON в List с отчетами
+     *
      * @param source строка в формате JSON которая содержит лист с отчетами
      * @return конвертированный лист с отчетами
      */

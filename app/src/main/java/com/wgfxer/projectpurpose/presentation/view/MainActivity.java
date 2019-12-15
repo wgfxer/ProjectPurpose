@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Отобразить фрагмент
+     *
      * @param fragment фрагмент для отображения
      */
     private void showFragment(Fragment fragment) {

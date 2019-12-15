@@ -69,5 +69,8 @@
     <string name="time_notification_text">%02d:%02d</string>
     <string name="delete_purpuse_confirm">Вы действительно хотите удалить цель?</string>
     <string name="text_days_static">дней</string>
+    <string name="toast_copied">Отчет скопирован</string>
+    <string name="clipboard_title">Отчет</string>
+    <string name="notification_summary_text">Ежедневное напоминание о написании отчета</string>
 
 </resources>

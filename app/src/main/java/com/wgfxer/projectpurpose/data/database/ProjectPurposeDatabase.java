@@ -21,6 +21,7 @@ public abstract class ProjectPurposeDatabase extends RoomDatabase {
 
     /**
      * получение экземпляра бд
+     *
      * @param context нужен для создания бд
      * @return экземпляр бд
      */

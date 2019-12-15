@@ -90,6 +90,7 @@ public class NotesListFragment extends Fragment {
 
     /**
      * Сохранение состояние(открытая страница)
+     *
      * @param outState
      */
     @Override
@@ -100,6 +101,7 @@ public class NotesListFragment extends Fragment {
 
     /**
      * Создает и возвращает экземпляр фрагмента с заметками для конкретной цели
+     *
      * @param purposeId
      * @return
      */

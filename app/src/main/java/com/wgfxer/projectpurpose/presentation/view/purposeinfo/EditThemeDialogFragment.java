@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -27,7 +28,12 @@ public class EditThemeDialogFragment extends DialogFragment {
     private static final String EXTRA_GRADIENT_ALPHA = "gradient_alpha";
     private static final String EXTRA_IS_WHITE_FONT = "is_white_font";
 
+    private static final String KEY_GRADIENT_ID = "KEY_GRADIENT_ID";
+    private static final String KEY_IS_WHITE_FONT = "KEY_IS_WHITE_FONT";
+
+
     private OnThemeChangeListener onThemeChangeListener;
+    private PurposeTheme purposeTheme;
 
     /**
      * интерфейса для слушания события при нажатии на кнопку готово
@@ -44,11 +50,16 @@ public class EditThemeDialogFragment extends DialogFragment {
         }
         final View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_edit_theme, null, false);
 
-        final PurposeTheme purposeTheme = new PurposeTheme();
+        purposeTheme = new PurposeTheme();
         purposeTheme.setImagePath(getArguments().getString(EXTRA_IMAGE_PATH));
         purposeTheme.setGradientId(getArguments().getInt(EXTRA_GRADIENT_ID));
         purposeTheme.setGradientAlpha(getArguments().getFloat(EXTRA_GRADIENT_ALPHA));
         purposeTheme.setWhiteFont(getArguments().getBoolean(EXTRA_IS_WHITE_FONT));
+
+        if (savedInstanceState != null) {
+            purposeTheme.setGradientId(savedInstanceState.getInt(KEY_GRADIENT_ID));
+            purposeTheme.setWhiteFont(savedInstanceState.getBoolean(KEY_IS_WHITE_FONT));
+        }
 
         TypedArray typedArrayGradients = getResources().obtainTypedArray(R.array.gradients_array);
         int[] gradients = new int[typedArrayGradients.length()];
@@ -119,6 +130,13 @@ public class EditThemeDialogFragment extends DialogFragment {
                     }
                 })
                 .create();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_GRADIENT_ID, purposeTheme.getGradientId());
+        outState.putBoolean(KEY_IS_WHITE_FONT, purposeTheme.isWhiteFont());
     }
 
     /**

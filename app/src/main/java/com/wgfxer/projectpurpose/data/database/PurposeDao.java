@@ -18,6 +18,7 @@ import androidx.room.Update;
 public interface PurposeDao {
     /**
      * Запрос всех не выполненных целей
+     *
      * @return liveData с целями
      */
     @Query("SELECT * FROM purposes WHERE isDone = 0")
@@ -25,6 +26,7 @@ public interface PurposeDao {
 
     /**
      * Запрос всех выполненных целей
+     *
      * @return liveData с целями
      */
     @Query("SELECT * FROM purposes WHERE isDone = 1")
@@ -32,6 +34,7 @@ public interface PurposeDao {
 
     /**
      * Вставляет новую цель
+     *
      * @param purpose цель для вставки
      */
     @Insert
@@ -40,6 +43,7 @@ public interface PurposeDao {
 
     /**
      * Удаляет цель
+     *
      * @param purpose цель для удаления
      */
     @Delete
@@ -47,6 +51,7 @@ public interface PurposeDao {
 
     /**
      * Обновляет цель
+     *
      * @param purpose цель для обновления
      */
     @Update
@@ -54,6 +59,7 @@ public interface PurposeDao {
 
     /**
      * Получает цель по id
+     *
      * @param purposeId id цели
      * @return liveData с целью
      */

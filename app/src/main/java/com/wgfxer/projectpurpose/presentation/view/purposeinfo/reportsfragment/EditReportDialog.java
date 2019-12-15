@@ -50,13 +50,14 @@ public class EditReportDialog extends DialogFragment {
     }
 
 
-    void setOnEditReportListener(OnEditReportListener onEditReportListener) {
+    private void setOnEditReportListener(OnEditReportListener onEditReportListener) {
         this.onEditReportListener = onEditReportListener;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        setRetainInstance(true);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.edit_report_dialog, null, false);
 
         findViews(view);
@@ -102,6 +103,7 @@ public class EditReportDialog extends DialogFragment {
 
     /**
      * находит все элементы во view
+     *
      * @param view в которой нужно найти элементы
      */
     private void findViews(View view) {
@@ -113,6 +115,7 @@ public class EditReportDialog extends DialogFragment {
 
     /**
      * по текущему моду возвращает строку с заголовком диалога
+     *
      * @return строку с title
      */
     private String getTitle() {
@@ -126,7 +129,7 @@ public class EditReportDialog extends DialogFragment {
         return title;
     }
 
-    static EditReportDialog getAddInstance(long reportDate) {
+    static EditReportDialog getAddInstance(long reportDate, OnEditReportListener onEditReportListener) {
 
         Bundle args = new Bundle();
 
@@ -135,10 +138,11 @@ public class EditReportDialog extends DialogFragment {
 
         EditReportDialog fragment = new EditReportDialog();
         fragment.setArguments(args);
+        fragment.setOnEditReportListener(onEditReportListener);
         return fragment;
     }
 
-    static EditReportDialog getEditInstance(Report report) {
+    static EditReportDialog getEditInstance(Report report, OnEditReportListener onEditReportListener) {
 
         Bundle args = new Bundle();
 
@@ -147,11 +151,12 @@ public class EditReportDialog extends DialogFragment {
         args.putString(KEY_REPORT_DESCRIPTION, report.getDescriptionReport());
         args.putString(KEY_REPORT_DID_GOOD, report.getWhatDidGood());
         args.putString(KEY_REPORT_COULD_BETTER, report.getWhatCouldBetter());
-
         args.putInt(KEY_MODE, KEY_MODE_EDIT);
 
         EditReportDialog fragment = new EditReportDialog();
         fragment.setArguments(args);
+        fragment.setOnEditReportListener(onEditReportListener);
+
         return fragment;
     }
 }

@@ -2,8 +2,11 @@ package com.wgfxer.projectpurpose.presentation.viewmodel;
 
 import android.content.Context;
 
+import com.wgfxer.projectpurpose.data.database.ProjectPurposeDatabase;
 import com.wgfxer.projectpurpose.data.repository.PurposesRepository;
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
+
+import java.util.concurrent.Executors;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -24,8 +27,8 @@ public class MainViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (MainViewModel.class.equals(modelClass)) {
-            IPurposesRepository purposesRepository = new PurposesRepository(applicationContext);
-
+            ProjectPurposeDatabase database = ProjectPurposeDatabase.getInstance(applicationContext);
+            IPurposesRepository purposesRepository = new PurposesRepository(database, Executors.newSingleThreadExecutor());
             // noinspection unchecked
             return (T) new MainViewModel(purposesRepository);
         } else {

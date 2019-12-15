@@ -95,6 +95,7 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * Подписать на вьюМодель
+     *
      * @param savedInstanceState нужен для того,чтобы при повороте отобразить сохраненные значения после инициализации цели
      */
     private void observeViewModel(final Bundle savedInstanceState) {
@@ -128,6 +129,7 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * обновляет UI из сохраненного состояния
+     *
      * @param savedInstanceState сохраненное состояние из которого берем значения
      */
     private void updateUIFromState(Bundle savedInstanceState) {
@@ -151,6 +153,7 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * обработка нажатий на кнопки
+     *
      * @param view кнопки - готово, выбрать дату и выбрать фото
      */
     @Override
@@ -198,9 +201,10 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * После выбора изображения попадаем сюда
+     *
      * @param requestCode код запроса
-     * @param resultCode код резульатат
-     * @param data содержит данные о выбранном изображении
+     * @param resultCode  код резульатат
+     * @param data        содержит данные о выбранном изображении
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -222,9 +226,10 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * Колбэк после запроса разрешения на чтение данных
-     * @param requestCode код запроса
-     * @param permissions массив с запрошенными разрешениями
-     * @param grantResults  массив с результатами запросов
+     *
+     * @param requestCode  код запроса
+     * @param permissions  массив с запрошенными разрешениями
+     * @param grantResults массив с результатами запросов
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -250,6 +255,7 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * проверка названия и даты цели на пустоту, если что-то пустое запускаем анимацию
+     *
      * @return пусты ли поля или нет
      */
     private boolean isFieldsEmpty() {
@@ -284,6 +290,7 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
 
     /**
      * Вызывается после того как была выбрана дата в диалоге
+     *
      * @param date выбранная даат
      */
     @Override

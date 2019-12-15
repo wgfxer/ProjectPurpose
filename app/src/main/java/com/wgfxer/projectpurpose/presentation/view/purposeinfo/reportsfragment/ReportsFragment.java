@@ -1,5 +1,8 @@
 package com.wgfxer.projectpurpose.presentation.view.purposeinfo.reportsfragment;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,15 +11,18 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.models.domain.Report;
+import com.wgfxer.projectpurpose.presentation.view.MainActivity;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,6 +49,7 @@ public class ReportsFragment extends Fragment {
 
     private Button createReportButton;
     private ImageButton editReportImageButton;
+    private ImageButton copyReportImageButton;
 
     private CardView cardViewReport;
 
@@ -53,7 +60,7 @@ public class ReportsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.calendar_view_fragment, container, false);
+        return inflater.inflate(R.layout.reports_fragment, container, false);
     }
 
     @Override
@@ -101,6 +108,7 @@ public class ReportsFragment extends Fragment {
         reportCouldBetterTextView = view.findViewById(R.id.what_could_better_text_view);
         createReportButton = view.findViewById(R.id.button_write_report);
         editReportImageButton = view.findViewById(R.id.edit_image_button);
+        copyReportImageButton = view.findViewById(R.id.copy_report_image_button);
         cardViewReport = view.findViewById(R.id.card_view_report);
     }
 
@@ -114,8 +122,10 @@ public class ReportsFragment extends Fragment {
         viewModel.getPurposeById(getArguments().getInt(KEY_PURPOSE_ID)).observe(this, new Observer<Purpose>() {
             @Override
             public void onChanged(Purpose purpose) {
-                ReportsFragment.this.purpose = purpose;
-                showCurrentReport();
+                if (purpose != null) {
+                    ReportsFragment.this.purpose = purpose;
+                    showCurrentReport();
+                }
             }
         });
     }
@@ -127,8 +137,7 @@ public class ReportsFragment extends Fragment {
         editReportImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditReportDialog editReportDialog = EditReportDialog.getEditInstance(report);
-                editReportDialog.setOnEditReportListener(new EditReportDialog.OnEditReportListener() {
+                EditReportDialog editReportDialog = EditReportDialog.getEditInstance(report, new EditReportDialog.OnEditReportListener() {
                     @Override
                     public void onEditReport(Report report) {
                         ReportsFragment.this.report = report;
@@ -143,8 +152,7 @@ public class ReportsFragment extends Fragment {
         createReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditReportDialog addReportDialog = EditReportDialog.getAddInstance(selectedDate);
-                addReportDialog.setOnEditReportListener(new EditReportDialog.OnEditReportListener() {
+                EditReportDialog addReportDialog = EditReportDialog.getAddInstance(selectedDate, new EditReportDialog.OnEditReportListener() {
                     @Override
                     public void onEditReport(Report report) {
                         ReportsFragment.this.report = report;
@@ -168,8 +176,38 @@ public class ReportsFragment extends Fragment {
                 showCurrentReport();
             }
         });
+
+        copyReportImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String reportString = Utils.getStringFromDate(new Date(report.getDateReport())) +
+                        " " + report.getTitleReport() +
+                        "\n" + report.getDescriptionReport() +
+                        "\n" + getString(R.string.what_did_good_text) +
+                        "\n" + report.getWhatDidGood() +
+                        "\n" + getString(R.string.what_could_better_text) +
+                        "\n" + report.getWhatCouldBetter();
+                copyText(reportString.replaceAll("null", ""));
+            }
+        });
     }
 
+    /**
+     * Копирует текст
+     *
+     * @param text текст для копирования
+     */
+    private void copyText(String text) {
+        ClipboardManager manager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        if (manager != null) {
+            manager.setPrimaryClip(
+                    ClipData.newPlainText(
+                            getString(R.string.clipboard_title), text
+                    )
+            );
+            Toast.makeText(getContext(), R.string.toast_copied, Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
     /**
@@ -208,7 +246,8 @@ public class ReportsFragment extends Fragment {
     /**
      * ищет отчет в цели, если его нет возвращает null
      */
-    private @Nullable Report getReportBySelectedDate() {
+    @Nullable
+    private Report getReportBySelectedDate() {
         Report report = null;
         for (Report rep : purpose.getReportsList()) {
             if (rep.getDateReport() == selectedDate) {
@@ -220,6 +259,7 @@ public class ReportsFragment extends Fragment {
 
     /**
      * Скрывает кнопку добавления и отображает отчет
+     *
      * @param report отчет для отображения
      */
     private void showReport(Report report) {

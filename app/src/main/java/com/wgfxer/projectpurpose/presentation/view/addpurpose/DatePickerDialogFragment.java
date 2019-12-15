@@ -3,7 +3,6 @@ package com.wgfxer.projectpurpose.presentation.view.addpurpose;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
@@ -77,6 +76,7 @@ public class DatePickerDialogFragment extends DialogFragment {
 
     /**
      * создает и возвращает новый экземпляр фрагмента
+     *
      * @param date уже выбранная дата, может быть null, если не была установлена
      * @return экземпляр
      */

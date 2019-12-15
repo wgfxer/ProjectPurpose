@@ -14,8 +14,6 @@ import android.widget.TextView;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
 
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
@@ -91,7 +89,7 @@ public class SettingsFragment extends Fragment {
     private void beginNewWork() {
         PeriodicWorkRequest notificationsWork = new PeriodicWorkRequest.Builder(NotificationWorker.class,
                 Utils.ONE_DAY_IN_MILLIS + 2, TimeUnit.MILLISECONDS, Utils.ONE_DAY_IN_MILLIS, TimeUnit.MILLISECONDS)
-                .setInitialDelay(Utils.getMillisUntilNext(notificationHours,notificationMinutes), TimeUnit.MILLISECONDS)
+                .setInitialDelay(Utils.getMillisUntilNext(notificationHours, notificationMinutes), TimeUnit.MILLISECONDS)
                 .addTag(WORK_TAG)
                 .build();
         WorkManager.getInstance(getContext()).enqueue(notificationsWork);
@@ -150,7 +148,8 @@ public class SettingsFragment extends Fragment {
 
     /**
      * устанавливает в преференсы
-     * @param hours час напоминаия
+     *
+     * @param hours   час напоминаия
      * @param minutes минута напоминания
      */
     private void putTime(int hours, int minutes) {
@@ -162,6 +161,7 @@ public class SettingsFragment extends Fragment {
 
     /**
      * устанавливает преференсы
+     *
      * @param isNotificationEnabled включены ли напоминания
      */
     private void putIsNotificationEnabled(boolean isNotificationEnabled) {

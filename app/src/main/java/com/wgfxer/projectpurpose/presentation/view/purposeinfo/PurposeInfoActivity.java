@@ -82,7 +82,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     }
 
     /**
-     *  создает и возвращает интент для перехода к активности с передачей id цели
+     * создает и возвращает интент для перехода к активности с передачей id цели
      */
     public static Intent newIntent(Context context, int id) {
         Intent intent = new Intent(context, PurposeInfoActivity.class);
@@ -91,7 +91,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     }
 
     /**
-     *  заполнение меню
+     * заполнение меню
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -102,7 +102,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     /**
      * обработка нажатий на меню(назад, изменить,поделиться)
-     * */
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -161,6 +161,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     /**
      * колбэк при изменении темы
+     *
      * @param theme новая тема
      */
     @Override
@@ -209,6 +210,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     /**
      * меняет режим просмотра(заметки или отчеты)
+     *
      * @param mode константа для отчетов или для заметок
      */
     private void switchMode(int mode) {
@@ -334,13 +336,14 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     /**
      * запускает интент поделиться целью, в зависимости от того выполнена или нет - разный текст
+     *
      * @param purpose
      */
     private void sharePurpose(Purpose purpose) {
         String shareText = null;
-        if(!purpose.isDone()){
+        if (!purpose.isDone()) {
             shareText = getString(R.string.share_purpose_message, purpose.getTitle(), Utils.getStringFromDate(purpose.getDate()));
-        }else{
+        } else {
             shareText = getString(R.string.share_done_purpose_message, purpose.getTitle(), Utils.getStringFromDate(purpose.getDate()));
         }
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -352,6 +355,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     /**
      * сохранение выбранного мода
+     *
      * @param outState
      */
     @Override

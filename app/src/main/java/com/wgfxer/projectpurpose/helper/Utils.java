@@ -10,9 +10,9 @@ public class Utils {
     public static final long ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
 
 
-
     /**
      * Форматирует Date в строку
+     *
      * @param date форматируемая date
      * @return Строку вида 28 дек 2019
      */
@@ -23,6 +23,7 @@ public class Utils {
 
     /**
      * Из date получает количество дней до этой date
+     *
      * @param date до какой даты хотим посчитать дни
      * @return количество дней
      */
@@ -32,7 +33,8 @@ public class Utils {
 
     /**
      * возвращает миллисекунды до следующего уведомления, нужно для запуска работы
-     * @param notificationHours час уведомления
+     *
+     * @param notificationHours   час уведомления
      * @param notificationMinutes минута уведомления
      */
     public static long getMillisUntilNext(int notificationHours, int notificationMinutes) {
@@ -50,6 +52,7 @@ public class Utils {
     /**
      * возвращает время независимое от миллисекунд
      * нужно для поиска отчета по дате в списке отчетов у цели
+     *
      * @param time дата для которой нужно получить независимое время
      * @return независимое время
      */
