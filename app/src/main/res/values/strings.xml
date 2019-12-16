@@ -72,5 +72,6 @@
     <string name="toast_copied">Отчет скопирован</string>
     <string name="clipboard_title">Отчет</string>
     <string name="notification_summary_text">Ежедневное напоминание о написании отчета</string>
+    <string name="choose_purpose_text">Выберите цель</string>
 
 </resources>

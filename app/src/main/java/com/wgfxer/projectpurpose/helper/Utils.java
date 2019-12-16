@@ -1,5 +1,7 @@
 package com.wgfxer.projectpurpose.helper;
 
+import android.graphics.Bitmap;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,4 +68,5 @@ public class Utils {
         calendarResult.set(Calendar.DAY_OF_MONTH, calendarFromView.get(Calendar.DAY_OF_MONTH));
         return calendarResult.getTimeInMillis();
     }
+
 }

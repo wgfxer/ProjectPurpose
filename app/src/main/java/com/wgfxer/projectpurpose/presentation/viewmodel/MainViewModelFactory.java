@@ -30,7 +30,7 @@ public class MainViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             ProjectPurposeDatabase database = ProjectPurposeDatabase.getInstance(applicationContext);
             IPurposesRepository purposesRepository = new PurposesRepository(database, Executors.newSingleThreadExecutor());
             // noinspection unchecked
-            return (T) new MainViewModel(purposesRepository);
+            return (T) new MainViewModel(purposesRepository, applicationContext);
         } else {
             return super.create(modelClass);
         }

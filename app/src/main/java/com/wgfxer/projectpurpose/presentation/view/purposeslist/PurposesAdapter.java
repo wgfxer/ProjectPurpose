@@ -43,12 +43,12 @@ public class PurposesAdapter extends RecyclerView.Adapter<PurposesAdapter.Purpos
         return purposesList.size();
     }
 
-    void setPurposesList(List<Purpose> purposesList) {
+    public void setPurposesList(List<Purpose> purposesList) {
         this.purposesList = purposesList;
         notifyDataSetChanged();
     }
 
-    void setOnPurposeClickListener(OnPurposeClickListener onPurposeClickListener) {
+    public void setOnPurposeClickListener(OnPurposeClickListener onPurposeClickListener) {
         this.onPurposeClickListener = onPurposeClickListener;
     }
 
@@ -117,7 +117,7 @@ public class PurposesAdapter extends RecyclerView.Adapter<PurposesAdapter.Purpos
     /**
      * интерфейс для прослушивания события клика по карточке с целью
      */
-    interface OnPurposeClickListener {
+    public interface OnPurposeClickListener {
         void onPurposeClick(Purpose purpose);
     }
 }
