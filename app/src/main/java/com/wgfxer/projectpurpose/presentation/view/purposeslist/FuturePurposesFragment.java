@@ -1,5 +1,4 @@
-package com.wgfxer.projectpurpose.presentation.view.purposeslist;
-
+package com.wgfxer.projectpurpose.presentation.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +12,7 @@ import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.presentation.view.addpurpose.AddPurposeActivity;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.PurposeInfoActivity;
+import com.wgfxer.projectpurpose.presentation.view.purposeslist.PurposesAdapter;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
 
@@ -27,25 +27,27 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * Фрагмент со списком целей
- * Может быть в режиме будущие цели или выполненные цели
- */
-public class PurposesListFragment extends Fragment {
+public class FuturePurposesFragment extends Fragment {
 
-    public static final int MODE_FUTURE_PURPOSES = 1;
-    public static final int MODE_DONE_PURPOSES = 2;
-    private static final String KEY_MODE = "KEY_MODE";
     private TextView noItemsTextView;
     private TextView titleTextView;
     private RecyclerView purposesRecyclerView;
     private PurposesAdapter purposesAdapter;
     private FloatingActionButton createPurposeButton;
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_purposes_list, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_future_purposes,container,false);
+    }
+
+    public static FuturePurposesFragment newInstance() {
+
+        Bundle args = new Bundle();
+
+        FuturePurposesFragment fragment = new FuturePurposesFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class PurposesListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
         initAdapter();
-        observeViewModel(getArguments().getInt(KEY_MODE));
+        observeViewModel();
     }
 
     private void initViews(View view) {
@@ -83,19 +85,11 @@ public class PurposesListFragment extends Fragment {
         purposesRecyclerView.setAdapter(purposesAdapter);
     }
 
-    private void observeViewModel(int mode) {
+    private void observeViewModel() {
         MainViewModel viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
                 .get(MainViewModel.class);
-        LiveData<List<Purpose>> purposesLiveData = null;
-        if (mode == MODE_FUTURE_PURPOSES) {
-            purposesLiveData = viewModel.getPurposes();
-            titleTextView.setText(R.string.purposes);
-        } else if (mode == MODE_DONE_PURPOSES) {
-            titleTextView.setText(R.string.done_purposes);
-            purposesLiveData = viewModel.getDonePurposes();
-            noItemsTextView.setText(R.string.no_done_purposes_text);
-            createPurposeButton.setVisibility(View.INVISIBLE);
-        }
+        LiveData<List<Purpose>> purposesLiveData = viewModel.getFuturePurposes();
+
         if (purposesLiveData != null) {
             purposesLiveData.observe(this, new Observer<List<Purpose>>() {
                 @Override
@@ -109,14 +103,5 @@ public class PurposesListFragment extends Fragment {
                 }
             });
         }
-    }
-
-    public static PurposesListFragment newInstance(int mode) {
-
-        Bundle args = new Bundle();
-        args.putInt(KEY_MODE, mode);
-        PurposesListFragment fragment = new PurposesListFragment();
-        fragment.setArguments(args);
-        return fragment;
     }
 }

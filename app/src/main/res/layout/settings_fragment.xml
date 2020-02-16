@@ -64,4 +64,16 @@
         android:layout_margin="16dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
+    <TextView
+        android:id="@+id/developer_info_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:text="@string/item_developer_info_text"
+        android:textSize="16sp"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notification_summary_text_view" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

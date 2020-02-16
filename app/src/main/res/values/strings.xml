@@ -8,10 +8,11 @@
     </plurals>
 
     <string name="app_name">ProjectPurpose</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_items">Вы еще не записали ни одной цели</string>
     <string name="purposes">Цели</string>
+    <string name="archive_purposes">Архив целей</string>
     <string name="done_purposes">Выполненные цели</string>
+    <string name="expired_purposes">Просроченные цели</string>
     <string name="choose_date">Выбрать дату</string>
     <string name="button_done">Готово</string>
     <string name="purpose_hint">Цель</string>
@@ -67,11 +68,14 @@
     <string name="dialog_ok_text">ОК</string>
     <string name="dialog_cancel_text">Отмена</string>
     <string name="time_notification_text">%02d:%02d</string>
-    <string name="delete_purpuse_confirm">Вы действительно хотите удалить цель?</string>
+    <string name="delete_purpose_confirm">Вы действительно хотите удалить цель?</string>
     <string name="text_days_static">дней</string>
     <string name="toast_copied">Отчет скопирован</string>
     <string name="clipboard_title">Отчет</string>
     <string name="notification_summary_text">Ежедневное напоминание о написании отчета</string>
     <string name="choose_purpose_text">Выберите цель</string>
+    <string name="item_developer_info_text">Информация о разработчике</string>
+    <string name="show_expired_purposes">Показать просроченные цели</string>
+    <string name="hide_expired_purposes">Скрыть просроченные цели</string>
 
 </resources>
