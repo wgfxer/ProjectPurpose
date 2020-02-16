@@ -17,12 +17,12 @@ import androidx.room.Update;
 @Dao
 public interface PurposeDao {
     /**
-     * Запрос всех не выполненных целей
+     * Запрос всех будущих целей
      *
      * @return liveData с целями
      */
-    @Query("SELECT * FROM purposes WHERE isDone = 0")
-    LiveData<List<Purpose>> getAllPurposes();
+    @Query("SELECT * FROM purposes WHERE isDone = 0 AND date >=  :currentDate")
+    LiveData<List<Purpose>> getFuturePurposes(long currentDate);
 
     /**
      * Запрос всех выполненных целей
@@ -30,7 +30,16 @@ public interface PurposeDao {
      * @return liveData с целями
      */
     @Query("SELECT * FROM purposes WHERE isDone = 1")
-    LiveData<List<Purpose>> getDonePurposes();
+    LiveData<List<Purpose>> getCompletedPurposes();
+
+    /**
+     * Запрос всех просроченных целей
+     *
+     * @return liveData с целями
+     */
+    @Query("SELECT * FROM purposes WHERE isDone = 0 AND date < :currentDate")
+    LiveData<List<Purpose>> getExpiredPurposes(long currentDate);
+
 
     /**
      * Вставляет новую цель
@@ -65,4 +74,7 @@ public interface PurposeDao {
      */
     @Query("SELECT * FROM purposes WHERE id = :purposeId")
     LiveData<Purpose> getPurposeById(int purposeId);
+
+    @Query("SELECT * FROM purposes WHERE id = :purposeId")
+    Purpose getPurposeByIdAsync(int purposeId);
 }

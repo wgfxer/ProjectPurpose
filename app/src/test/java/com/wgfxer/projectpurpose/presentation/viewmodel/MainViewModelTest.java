@@ -1,6 +1,5 @@
 package com.wgfxer.projectpurpose.presentation.viewmodel;
 
-import com.wgfxer.projectpurpose.data.repository.PurposesRepository;
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
 import com.wgfxer.projectpurpose.models.data.Purpose;
 
@@ -20,8 +19,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-
-import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MainViewModelTest {
@@ -45,9 +42,9 @@ public class MainViewModelTest {
     @Test
     public void getPurposesTest() {
         LiveData<List<Purpose>> liveDataPurposes = liveDataListExample();
-        Mockito.when(repository.getAllPurposes()).thenReturn(liveDataPurposes);
+        Mockito.when(repository.getFuturePurposes()).thenReturn(liveDataPurposes);
 
-        viewModel.getPurposes().observeForever(observer);
+        viewModel.getFuturePurposes().observeForever(observer);
 
         Mockito.verify(observer).onChanged(liveDataPurposes.getValue());
     }
@@ -56,9 +53,9 @@ public class MainViewModelTest {
     public void getDonePurposesTest() {
         LiveData<List<Purpose>> liveDataPurposes = liveDataListExample();
 
-        Mockito.when(repository.getDonePurposes()).thenReturn(liveDataPurposes);
+        Mockito.when(repository.getCompletedPurposes()).thenReturn(liveDataPurposes);
 
-        viewModel.getDonePurposes().observeForever(observer);
+        viewModel.getCompletedPurposes().observeForever(observer);
 
         Mockito.verify(observer).onChanged(liveDataPurposes.getValue());
     }

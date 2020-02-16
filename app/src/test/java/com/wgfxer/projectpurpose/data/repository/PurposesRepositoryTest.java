@@ -19,7 +19,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.work.impl.utils.SynchronousExecutor;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,18 +47,18 @@ public class PurposesRepositoryTest {
     public void getAllPurposesTest() {
         LiveData<List<Purpose>> liveDataPurposes = liveDataListExample();
 
-        when(dao.getAllPurposes()).thenReturn(liveDataPurposes);
+        when(dao.getFuturePurposes(System.currentTimeMillis())).thenReturn(liveDataPurposes);
 
-        assertThat(repository.getAllPurposes(), is(liveDataPurposes));
+        assertThat(repository.getFuturePurposes(), is(liveDataPurposes));
     }
 
     @Test
     public void getDonePurposesTest() {
         LiveData<List<Purpose>> liveDataPurposes = liveDataListExample();
 
-        when(dao.getDonePurposes()).thenReturn(liveDataPurposes);
+        when(dao.getCompletedPurposes(System.currentTimeMillis())).thenReturn(liveDataPurposes);
 
-        assertThat(repository.getDonePurposes(), is(liveDataPurposes));
+        assertThat(repository.getExpiredPurposes(), is(liveDataPurposes));
     }
 
 

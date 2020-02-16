@@ -1,8 +1,8 @@
 package com.wgfxer.projectpurpose.presentation.view.settings;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +12,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
+import com.wgfxer.projectpurpose.helper.PreferencesHelper;
 import com.wgfxer.projectpurpose.helper.Utils;
 
 import java.util.concurrent.TimeUnit;
@@ -27,16 +28,11 @@ import androidx.work.WorkManager;
 /**
  * Фрагмент с настройками
  */
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements TimePickerDialogFragment.OnTimeSetListener {
 
     private static final String WORK_TAG = "NOTIFICATION_WORK";
-    private static final String PREFERENCES_NAME = "PREFERENCES_NAME";
-    private static final String KEY_NOTIFICATIONS_ENABLED = "KEY_NOTIFICATIONS_ENABLED";
-    private static final String KEY_NOTIFICATION_HOURS = "KEY_NOTIFICATION_HOURS";
-    private static final String KEY_NOTIFICATION_MINUTES = "KEY_NOTIFICATION_MINUTES";
 
-
-    private SharedPreferences preferences;
+    private PreferencesHelper preferencesHelper;
 
     private Switch notificationsSwitch;
     private TextView notificationsTimeTextView;
@@ -44,6 +40,8 @@ public class SettingsFragment extends Fragment {
     private boolean isNotificationsEnabled = false;
     private int notificationHours = 21;
     private int notificationMinutes = 0;
+
+    private TextView developerInfoTextView;
 
 
     @Nullable
@@ -57,7 +55,9 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         notificationsSwitch = view.findViewById(R.id.notifications_switch);
         notificationsTimeTextView = view.findViewById(R.id.time_notification_text_view);
-        preferences = getContext().getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        developerInfoTextView = view.findViewById(R.id.developer_info_text_view);
+        preferencesHelper = new PreferencesHelper(getContext());
+
         updateUiFromPreferences();
         notificationsSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -70,6 +70,15 @@ public class SettingsFragment extends Fragment {
                     disableViewNotificationTime();
                 }
                 putIsNotificationEnabled(isChecked);
+            }
+        });
+
+        developerInfoTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://vk.com/wgfxer"));
+                startActivity(intent);
             }
         });
     }
@@ -102,24 +111,15 @@ public class SettingsFragment extends Fragment {
         notificationsTimeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerFragment timePickerFragment = TimePickerFragment.newInstance(notificationHours, notificationMinutes);
-                timePickerFragment.setOnTimeSetListener(new TimePickerFragment.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(int hours, int minutes) {
-                        notificationHours = hours;
-                        notificationMinutes = minutes;
-                        notificationsTimeTextView.setText(getString(R.string.time_notification_text, hours, minutes));
-                        putTime(hours, minutes);
-                        cancelWork();
-                        beginNewWork();
-                    }
-                });
+                TimePickerDialogFragment timePickerFragment = TimePickerDialogFragment.newInstance(notificationHours, notificationMinutes);
                 timePickerFragment.show(getActivity().getSupportFragmentManager(), null);
             }
         });
         notificationsTimeTextView.setEnabled(true);
         notificationsTimeTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
     }
+
+
 
     /**
      * выключение вью с выбором времени напоминания
@@ -133,9 +133,9 @@ public class SettingsFragment extends Fragment {
      * берет значения из преференсов и устанавливает ui
      */
     private void updateUiFromPreferences() {
-        isNotificationsEnabled = preferences.getBoolean(KEY_NOTIFICATIONS_ENABLED, false);
-        notificationHours = preferences.getInt(KEY_NOTIFICATION_HOURS, 21);
-        notificationMinutes = preferences.getInt(KEY_NOTIFICATION_MINUTES, 0);
+        isNotificationsEnabled = preferencesHelper.isNotificationEnabled();
+        notificationHours = preferencesHelper.getNotificationHours();
+        notificationMinutes = preferencesHelper.getNotificationMinutes();
 
         notificationsSwitch.setChecked(isNotificationsEnabled);
         notificationsTimeTextView.setText(getString(R.string.time_notification_text, notificationHours, notificationMinutes));
@@ -147,27 +147,22 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * устанавливает в преференсы
+     * устанавливает в преференсы значения времени уведомлений
      *
      * @param hours   час напоминаия
      * @param minutes минута напоминания
      */
     private void putTime(int hours, int minutes) {
-        preferences.edit()
-                .putInt(KEY_NOTIFICATION_HOURS, hours)
-                .putInt(KEY_NOTIFICATION_MINUTES, minutes)
-                .apply();
+        preferencesHelper.putNotificationTime(hours,minutes);
     }
 
     /**
-     * устанавливает преференсы
+     * устанавливает в преференсы значение включены ли уведомления
      *
      * @param isNotificationEnabled включены ли напоминания
      */
     private void putIsNotificationEnabled(boolean isNotificationEnabled) {
-        preferences.edit()
-                .putBoolean(KEY_NOTIFICATIONS_ENABLED, isNotificationEnabled)
-                .apply();
+        preferencesHelper.putIsNotificationEnabled(isNotificationEnabled);
     }
 
     public static SettingsFragment newInstance() {
@@ -179,4 +174,13 @@ public class SettingsFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onTimeSet(int hours, int minutes) {
+        notificationHours = hours;
+        notificationMinutes = minutes;
+        notificationsTimeTextView.setText(getString(R.string.time_notification_text, hours, minutes));
+        putTime(hours, minutes);
+        cancelWork();
+        beginNewWork();
+    }
 }

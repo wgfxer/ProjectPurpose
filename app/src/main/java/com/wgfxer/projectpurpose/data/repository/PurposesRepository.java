@@ -1,8 +1,5 @@
 package com.wgfxer.projectpurpose.data.repository;
 
-import android.content.Context;
-import android.os.AsyncTask;
-
 import com.wgfxer.projectpurpose.data.database.ProjectPurposeDatabase;
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
 import com.wgfxer.projectpurpose.models.data.Purpose;
@@ -30,13 +27,13 @@ public class PurposesRepository implements IPurposesRepository {
 
 
     /**
-     * получить не выполненные цели
+     * получить будущие цели
      *
-     * @return liveData с невыполненными целями
+     * @return liveData с будущими целями
      */
     @Override
-    public LiveData<List<Purpose>> getAllPurposes() {
-        return database.purposeDao().getAllPurposes();
+    public LiveData<List<Purpose>> getFuturePurposes() {
+        return database.purposeDao().getFuturePurposes(System.currentTimeMillis());
     }
 
     /**
@@ -45,8 +42,17 @@ public class PurposesRepository implements IPurposesRepository {
      * @return liveData с выполненными целями
      */
     @Override
-    public LiveData<List<Purpose>> getDonePurposes() {
-        return database.purposeDao().getDonePurposes();
+    public LiveData<List<Purpose>> getCompletedPurposes() {
+        return database.purposeDao().getCompletedPurposes();
+    }
+
+    /**
+     * получить просроченные цели
+     *
+     * @return liveData с просроченными целями
+     */
+    public LiveData<List<Purpose>> getExpiredPurposes() {
+        return database.purposeDao().getExpiredPurposes(System.currentTimeMillis());
     }
 
     /**
@@ -58,6 +64,11 @@ public class PurposesRepository implements IPurposesRepository {
     @Override
     public LiveData<Purpose> getPurposeById(int id) {
         return database.purposeDao().getPurposeById(id);
+    }
+
+    @Override
+    public Purpose getPurposeByIdSync(int purposeId){
+        return database.purposeDao().getPurposeByIdAsync(purposeId);
     }
 
     /**

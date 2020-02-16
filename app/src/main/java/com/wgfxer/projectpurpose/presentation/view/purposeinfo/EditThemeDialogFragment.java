@@ -153,4 +153,13 @@ public class EditThemeDialogFragment extends DialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    /**
+     * При отвязке от активити занулим ссылку на нее, чтобы не было утечки
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onThemeChangeListener = null;
+    }
 }

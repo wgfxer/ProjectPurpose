@@ -3,6 +3,7 @@ package com.wgfxer.projectpurpose.presentation.view.addpurpose;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
@@ -86,5 +87,13 @@ public class DatePickerDialogFragment extends DialogFragment {
         DatePickerDialogFragment datePickerFragment = new DatePickerDialogFragment();
         datePickerFragment.setArguments(bundle);
         return datePickerFragment;
+    }
+
+    /**
+     * При отвязке диалогфрагмента от активити зануляем ссылку на активити,чтобы не произошла утечка памяти
+     */
+    @Override
+    public void onDetach() {
+        super.onDetach();onDateSetListener = null; //может ли тут быть утечка если не занулить?
     }
 }

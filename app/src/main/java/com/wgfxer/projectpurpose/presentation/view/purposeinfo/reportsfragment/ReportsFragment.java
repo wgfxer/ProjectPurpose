@@ -17,7 +17,6 @@ import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.models.domain.Report;
-import com.wgfxer.projectpurpose.presentation.view.MainActivity;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
 
@@ -137,7 +136,7 @@ public class ReportsFragment extends Fragment {
         editReportImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditReportDialog editReportDialog = EditReportDialog.getEditInstance(report, new EditReportDialog.OnEditReportListener() {
+                EditReportDialogFragment editReportDialog = EditReportDialogFragment.getEditInstance(report, new EditReportDialogFragment.OnEditReportListener() {
                     @Override
                     public void onEditReport(Report report) {
                         ReportsFragment.this.report = report;
@@ -152,7 +151,7 @@ public class ReportsFragment extends Fragment {
         createReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditReportDialog addReportDialog = EditReportDialog.getAddInstance(selectedDate, new EditReportDialog.OnEditReportListener() {
+                EditReportDialogFragment addReportDialog = EditReportDialogFragment.getAddInstance(selectedDate, new EditReportDialogFragment.OnEditReportListener() {
                     @Override
                     public void onEditReport(Report report) {
                         ReportsFragment.this.report = report;

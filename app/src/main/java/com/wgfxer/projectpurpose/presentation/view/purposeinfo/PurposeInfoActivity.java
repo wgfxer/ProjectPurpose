@@ -10,6 +10,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -79,6 +80,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         if (savedInstanceState != null) {
             switchMode(savedInstanceState.getInt(KEY_SELECTED_MODE));
         }
+
     }
 
     /**
@@ -329,7 +331,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
                         dialogInterface.dismiss();
                     }
                 })
-                .setTitle(R.string.delete_purpuse_confirm)
+                .setTitle(R.string.delete_purpose_confirm)
                 .create();
         dialog.show();
     }

@@ -12,11 +12,15 @@ import androidx.lifecycle.LiveData;
  * интерфейс репозитория, реализует PurposesRepository
  */
 public interface IPurposesRepository {
-    LiveData<List<Purpose>> getAllPurposes();
+    LiveData<List<Purpose>> getFuturePurposes();
 
-    LiveData<List<Purpose>> getDonePurposes();
+    LiveData<List<Purpose>> getCompletedPurposes();
+
+    LiveData<List<Purpose>> getExpiredPurposes();
 
     LiveData<Purpose> getPurposeById(int id);
+
+    Purpose getPurposeByIdSync(int purposeId);
 
     void insertPurpose(Purpose purpose);
 

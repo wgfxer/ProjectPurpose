@@ -1,4 +1,4 @@
-package com.wgfxer.projectpurpose.presentation.view;
+package com.wgfxer.projectpurpose.presentation.view.purposeslist;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.presentation.view.addpurpose.AddPurposeActivity;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.PurposeInfoActivity;
-import com.wgfxer.projectpurpose.presentation.view.purposeslist.PurposesAdapter;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
 import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
 

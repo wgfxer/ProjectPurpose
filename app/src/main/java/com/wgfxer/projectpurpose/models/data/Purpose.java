@@ -3,6 +3,7 @@ package com.wgfxer.projectpurpose.models.data;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.data.database.PurposeConverter;
+import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.models.domain.Note;
 import com.wgfxer.projectpurpose.models.domain.PurposeTheme;
 import com.wgfxer.projectpurpose.models.domain.Report;
@@ -26,34 +27,11 @@ public class Purpose {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
-    /**
-     * название цели
-     */
     private String title;
-
-    /**
-     * дата окончания цели
-     */
     private Date date;
-
-    /**
-     * лист с заметками по цели(план действий,мотивация,заметки)
-     */
     private List<Note> notesList;
-
-    /**
-     * Тема цели
-     */
     private PurposeTheme theme;
-
-    /**
-     * список отчетов по цели
-     */
     private List<Report> reportsList;
-
-    /**
-     * Завершена ли цель
-     */
     private boolean isDone;
 
     public Purpose() {

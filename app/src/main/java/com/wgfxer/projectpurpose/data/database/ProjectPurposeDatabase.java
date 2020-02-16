@@ -28,7 +28,10 @@ public abstract class ProjectPurposeDatabase extends RoomDatabase {
     public static ProjectPurposeDatabase getInstance(Context context) {
         synchronized (LOCK) {
             if (instance == null) {
-                instance = Room.databaseBuilder(context, ProjectPurposeDatabase.class, DB_NAME).fallbackToDestructiveMigration().build();
+                instance = Room.databaseBuilder(context, ProjectPurposeDatabase.class, DB_NAME)
+                        .fallbackToDestructiveMigration()
+                        .allowMainThreadQueries()
+                        .build();
             }
         }
         return instance;

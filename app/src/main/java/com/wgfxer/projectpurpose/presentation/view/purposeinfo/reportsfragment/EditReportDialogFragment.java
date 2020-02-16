@@ -18,7 +18,7 @@ import androidx.fragment.app.DialogFragment;
 /**
  * Диалог для создания и изменения отчета
  */
-public class EditReportDialog extends DialogFragment {
+public class EditReportDialogFragment extends DialogFragment {
 
     private static final String KEY_REPORT_DATE = "KEY_REPORT_DATE";
     private static final String KEY_REPORT_TITLE = "KEY_REPORT_TITLE";
@@ -129,20 +129,20 @@ public class EditReportDialog extends DialogFragment {
         return title;
     }
 
-    static EditReportDialog getAddInstance(long reportDate, OnEditReportListener onEditReportListener) {
+    static EditReportDialogFragment getAddInstance(long reportDate, OnEditReportListener onEditReportListener) {
 
         Bundle args = new Bundle();
 
         args.putLong(KEY_REPORT_DATE, reportDate);
         args.putInt(KEY_MODE, KEY_MODE_CREATE);
 
-        EditReportDialog fragment = new EditReportDialog();
+        EditReportDialogFragment fragment = new EditReportDialogFragment();
         fragment.setArguments(args);
         fragment.setOnEditReportListener(onEditReportListener);
         return fragment;
     }
 
-    static EditReportDialog getEditInstance(Report report, OnEditReportListener onEditReportListener) {
+    static EditReportDialogFragment getEditInstance(Report report, OnEditReportListener onEditReportListener) {
 
         Bundle args = new Bundle();
 
@@ -153,7 +153,7 @@ public class EditReportDialog extends DialogFragment {
         args.putString(KEY_REPORT_COULD_BETTER, report.getWhatCouldBetter());
         args.putInt(KEY_MODE, KEY_MODE_EDIT);
 
-        EditReportDialog fragment = new EditReportDialog();
+        EditReportDialogFragment fragment = new EditReportDialogFragment();
         fragment.setArguments(args);
         fragment.setOnEditReportListener(onEditReportListener);
 
