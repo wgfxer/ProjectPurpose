@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".presentation.view.AppWidgetConfigActivity">
+        <activity android:name=".presentation.view.widget.AppWidgetConfigActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -29,7 +29,7 @@
         <activity android:name=".presentation.view.addpurpose.AddPurposeActivity" />
         <activity android:name=".presentation.view.purposeinfo.PurposeInfoActivity" />
 
-        <receiver android:name=".presentation.view.WidgetProvider">
+        <receiver android:name=".presentation.view.widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
