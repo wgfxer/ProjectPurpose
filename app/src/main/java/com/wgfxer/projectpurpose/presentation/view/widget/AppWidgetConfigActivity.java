@@ -1,4 +1,4 @@
-package com.wgfxer.projectpurpose.presentation.view;
+package com.wgfxer.projectpurpose.presentation.view.widget;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
@@ -6,18 +6,13 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.PreferencesHelper;
-import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.helper.WidgetHelper;
 import com.wgfxer.projectpurpose.models.data.Purpose;
 import com.wgfxer.projectpurpose.presentation.view.purposeslist.PurposesAdapter;
@@ -68,7 +63,7 @@ public class AppWidgetConfigActivity extends AppCompatActivity {
             public void onPurposeClick(Purpose purpose) {
                 AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(AppWidgetConfigActivity.this);
                 WidgetHelper widgetHelper = new WidgetHelper(AppWidgetConfigActivity.this);
-                RemoteViews remoteViews = widgetHelper.getRemoteViewsForPurpose(purpose);
+                RemoteViews remoteViews = widgetHelper.getRemoteViewsForPurpose(purpose, 110, 40);
 
                 appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
 

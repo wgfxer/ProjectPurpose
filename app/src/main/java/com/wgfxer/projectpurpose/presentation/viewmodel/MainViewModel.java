@@ -8,7 +8,7 @@ import android.content.Intent;
 
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
 import com.wgfxer.projectpurpose.models.data.Purpose;
-import com.wgfxer.projectpurpose.presentation.view.WidgetProvider;
+import com.wgfxer.projectpurpose.presentation.view.widget.WidgetProvider;
 
 import java.util.List;
 
