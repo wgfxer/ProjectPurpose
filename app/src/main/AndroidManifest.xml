@@ -10,6 +10,7 @@
         android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:name=".presentation.view.ProjectPurposeApplication"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".presentation.view.widget.AppWidgetConfigActivity">
             <intent-filter>

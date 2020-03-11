@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!--Bottom Navigation-->
+    <color name="bottom_title_selected">@android:color/white</color>
+    <color name="bottom_icon_selected">@color/colorAccent</color>
+    <color name="bottom_item_disabled">#585858</color>
+    <color name="bottom_nav_background">@color/colorPrimary</color>
+
+    <color name="color_navigation_bar">@color/colorPrimaryDark</color>
+
+
+
+    <color name="color_background">@color/colorPrimaryDark</color>
+    <color name="color_text">@android:color/white</color>
+
+    <!--FloatingActionButton-->
+    <color name="fab_bg_color">@android:color/white</color>
+    <color name="fab_icon_color">@color/colorPrimaryDark</color>
+
+    <color name="separator_view_color">#1B2431</color>
+
+    <color name="enabled_button_color">@android:color/white</color>
+    <color name="disabled_button_color">#414A57</color>
+
+    <color name="color_note_title">@android:color/white</color>
+
+
+
+</resources>

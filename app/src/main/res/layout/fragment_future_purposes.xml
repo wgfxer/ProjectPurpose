@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/colorPrimaryDark"
+            app:contentScrim="@color/color_background"
             app:expandedTitleMarginStart="10dp"
             app:layout_scrollFlags="scroll|snap"
             app:title=" ">
@@ -58,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/color_background">
 
         <TextView
             android:id="@+id/no_items"
@@ -85,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_gravity="end|bottom"
-        android:backgroundTint="@android:color/white"
+        android:backgroundTint="@color/fab_bg_color"
         app:borderWidth="0dp"
         android:src="@drawable/ic_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

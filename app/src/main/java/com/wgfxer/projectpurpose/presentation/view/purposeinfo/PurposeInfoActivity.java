@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -15,9 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.models.data.Purpose;
@@ -67,6 +72,10 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     private Menu menu;
     private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbar;
+    private AppBarLayout appBar;
+
+    private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +217,40 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
                 fragmentManager.beginTransaction().replace(R.id.fragment_container, reportsFragment).commit();
             }
         });
+
+        collapsingToolbar =  findViewById(R.id.collapsing_toolbar);
+        appBar = findViewById(R.id.appbar_layout);
+        onOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
+                    setToolbarIconsColor(android.R.color.white);
+                } else if (verticalOffset == 0){
+                    setToolbarIconsColor(android.R.color.black);
+                }
+            }
+        };
+    }
+
+
+    /**
+     * Устанавливает цвет иконок в тулбаре
+     *  param colorResId id ресурса цвета в который красится тулбар
+     */
+    private void setToolbarIconsColor(int colorResId){
+        int color =  getResources().getColor(colorResId);
+        toolbar.getNavigationIcon().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        MenuItem editItem = toolbar.getMenu().findItem(R.id.edit_purpose);
+        if(editItem != null){
+            Drawable editIcon = editItem.getIcon();
+            editIcon.setColorFilter(color,PorterDuff.Mode.SRC_ATOP);
+        }
+        MenuItem shareItem = toolbar.getMenu().findItem(R.id.share_purpose);
+        if(shareItem != null){
+            Drawable shareIcon = shareItem.getIcon();
+            shareIcon.setColorFilter(color,PorterDuff.Mode.SRC_ATOP);
+        }
+        toolbar.getOverflowIcon().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
     /**
@@ -216,13 +259,15 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
      * @param mode константа для отчетов или для заметок
      */
     private void switchMode(int mode) {
+        int enabledButtonColor = getResources().getColor(R.color.enabled_button_color);
+        int disabledButtonColor = getResources().getColor(R.color.disabled_button_color);
         if (mode == SELECTED_MODE_NOTES) {
-            showNotesButton.setTextColor(Color.BLACK);
-            showReportsButton.setTextColor(Color.LTGRAY);
+            showNotesButton.setTextColor(enabledButtonColor);
+            showReportsButton.setTextColor(disabledButtonColor);
             currentMode = SELECTED_MODE_NOTES;
         } else if (mode == SELECTED_MODE_REPORTS) {
-            showNotesButton.setTextColor(Color.LTGRAY);
-            showReportsButton.setTextColor(Color.BLACK);
+            showNotesButton.setTextColor(disabledButtonColor);
+            showReportsButton.setTextColor(enabledButtonColor);
             currentMode = SELECTED_MODE_REPORTS;
         }
     }
@@ -278,12 +323,15 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && textViewBackground != null) {
                 textViewBackground.setTint(Color.WHITE);
             }
+            setToolbarIconsColor(android.R.color.white);
+            appBar.removeOnOffsetChangedListener(onOffsetChangedListener);
         } else {
             purposeTitleTextView.setTextColor(Color.BLACK);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && textViewBackground != null) {
                 textViewBackground.setTint(Color.BLACK);
             }
-            //поставить иконки тулбара в черный
+            setToolbarIconsColor(android.R.color.black);
+            appBar.addOnOffsetChangedListener(onOffsetChangedListener);
         }
         if (textViewBackground != null) {
             daysLeftTextView.setBackground(textViewBackground);
@@ -297,7 +345,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         setDonePurposeItemTitle();
-        return super.onPrepareOptionsMenu(menu);
+        return true;
     }
 
     /**

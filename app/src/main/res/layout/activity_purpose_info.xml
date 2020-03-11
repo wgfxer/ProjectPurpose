@@ -21,7 +21,6 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="@color/colorPrimary"
-            app:expandedTitleMarginStart="10dp"
             app:title=" "
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -103,9 +102,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textAllCaps="false"
-                android:background="@android:color/transparent"
                 android:textSize="18sp"
-                android:textColor="@android:color/black" />
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textColor="@color/enabled_button_color" />
 
             <Button
                 android:id="@+id/show_reports_button"
@@ -113,10 +112,10 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@id/show_notes_button"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@android:color/transparent"
                 android:textAllCaps="false"
                 android:textSize="18sp"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/disabled_button_color"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:text="@string/reports_text" />
 
             <FrameLayout

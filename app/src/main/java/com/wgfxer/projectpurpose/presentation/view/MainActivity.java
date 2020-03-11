@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.wgfxer.projectpurpose.R;
+import com.wgfxer.projectpurpose.helper.PreferencesHelper;
 import com.wgfxer.projectpurpose.presentation.view.purposeslist.ArchivePurposesFragment;
 import com.wgfxer.projectpurpose.presentation.view.purposeslist.FuturePurposesFragment;
 import com.wgfxer.projectpurpose.presentation.view.settings.SettingsFragment;
@@ -13,6 +14,7 @@ import com.wgfxer.projectpurpose.presentation.view.settings.TimePickerDialogFrag
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialogF
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();

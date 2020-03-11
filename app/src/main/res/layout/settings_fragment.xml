@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/color_background">
 
     <TextView
         android:id="@+id/text_view_settings"
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:text="@string/setting_title_text"
         android:textSize="32sp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/color_text"
         android:layout_margin="16dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/notification_title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:textColor="@color/color_text"
         android:text="@string/item_notification_text"
         android:textSize="16sp"
         android:layout_margin="16dp"
@@ -50,6 +50,8 @@
         android:text="21:00"
         android:textStyle="bold"
         android:textColor="@color/colorAccent"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@id/notifications_switch" />
@@ -62,18 +64,43 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/notification_summary_text_view"
         android:layout_margin="16dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark" />
+        android:theme="@style/SwitchTheme" />
+
+    <TextView
+        android:id="@+id/dark_theme_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Темная тема"
+        android:textSize="16sp"
+        android:layout_margin="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/notification_summary_text_view"
+        android:textColor="@color/color_text"/>
+
+    <Switch
+        android:id="@+id/dark_theme_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/dark_theme_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/dark_theme_title"
+        android:layout_margin="16dp"
+        android:theme="@style/SwitchTheme" />
 
     <TextView
         android:id="@+id/developer_info_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
+        android:textColor="@color/color_text"
         android:text="@string/item_developer_info_text"
         android:textSize="16sp"
         android:layout_margin="16dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/notification_summary_text_view" />
+        app:layout_constraintTop_toBottomOf="@id/dark_theme_title"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

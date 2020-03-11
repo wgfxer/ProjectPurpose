@@ -106,9 +106,9 @@ public class PurposesAdapter extends RecyclerView.Adapter<PurposesAdapter.Purpos
                 daysHintTextView.setTextColor(Color.WHITE);
             } else {
                 titleTextView.setTextColor(Color.BLACK);
-                dateTextView.setTextColor(Color.DKGRAY);
+                dateTextView.setTextColor(Color.BLACK);
                 daysToGoalTextView.setTextColor(Color.BLACK);
-                daysHintTextView.setTextColor(Color.DKGRAY);
+                daysHintTextView.setTextColor(Color.BLACK);
             }
         }
     }

@@ -10,6 +10,7 @@ public class PreferencesHelper {
     private static final String KEY_NOTIFICATION_HOURS = "KEY_NOTIFICATION_HOURS";
     private static final String KEY_NOTIFICATION_MINUTES = "KEY_NOTIFICATION_MINUTES";
     private static final String KEY_IS_EXPIRED_PURPOSE_SHOW = "KEY_IS_EXPIRED_PURPOSE_SHOW";
+    private static final String KEY_IS_DARK_THEME = "KEY_IS_DARK_THEME";
 
     private static final String KEY_PURPOSE_ID = "PURPOSE_ID";
 
@@ -61,5 +62,13 @@ public class PreferencesHelper {
 
     public int getPurposeIdForWidget(int appWidgetId) {
         return preferences.getInt(KEY_PURPOSE_ID + appWidgetId, -1);
+    }
+
+    public void putIsDarkTheme(boolean isDarkTheme) {
+        preferences.edit().putBoolean(KEY_IS_DARK_THEME,isDarkTheme).apply();
+    }
+
+    public boolean getIsDarkTheme(){
+        return preferences.getBoolean(KEY_IS_DARK_THEME,false);
     }
 }

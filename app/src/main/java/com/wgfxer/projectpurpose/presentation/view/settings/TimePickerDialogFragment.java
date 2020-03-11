@@ -1,11 +1,9 @@
 package com.wgfxer.projectpurpose.presentation.view.settings;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
@@ -14,6 +12,7 @@ import com.wgfxer.projectpurpose.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 /**
@@ -46,21 +45,8 @@ public class TimePickerDialogFragment extends DialogFragment {
         if (getActivity() instanceof OnTimeSetListener) {
             onTimeSetListener = (OnTimeSetListener) getActivity();
         }
-        timePicker.setIs24HourView(true);
-        hours = getArguments().getInt(KEY_HOURS);
-        minutes = getArguments().getInt(KEY_MINUTES);
-        if (savedInstanceState != null) {
-            hours = savedInstanceState.getInt(KEY_HOURS);
-            minutes = savedInstanceState.getInt(KEY_MINUTES);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            timePicker.setHour(hours);
-            timePicker.setMinute(minutes);
-        } else {
-            timePicker.setCurrentHour(hours);
-            timePicker.setCurrentMinute(minutes);
-        }
-        return new AlertDialog.Builder(getContext())
+        initViews(savedInstanceState);
+        return new AlertDialog.Builder(getActivity() )
                 .setTitle("Выберите время уведомления")
                 .setView(view)
                 .setPositiveButton(R.string.dialog_ok_text, new DialogInterface.OnClickListener() {
@@ -82,6 +68,23 @@ public class TimePickerDialogFragment extends DialogFragment {
                         dialog1.dismiss();
                     }
                 }).create();
+    }
+
+    private void initViews(@Nullable Bundle savedInstanceState) {
+        timePicker.setIs24HourView(true);
+        hours = getArguments().getInt(KEY_HOURS);
+        minutes = getArguments().getInt(KEY_MINUTES);
+        if (savedInstanceState != null) {
+            hours = savedInstanceState.getInt(KEY_HOURS);
+            minutes = savedInstanceState.getInt(KEY_MINUTES);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            timePicker.setHour(hours);
+            timePicker.setMinute(minutes);
+        } else {
+            timePicker.setCurrentHour(hours);
+            timePicker.setCurrentMinute(minutes);
+        }
     }
 
 

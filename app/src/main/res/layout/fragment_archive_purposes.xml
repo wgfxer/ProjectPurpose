@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/colorPrimaryDark"
+            app:contentScrim="@color/color_background"
             app:expandedTitleMarginStart="10dp"
             app:layout_scrollFlags="scroll|snap"
             app:title=" ">
@@ -57,19 +57,18 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/color_background"
         android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <TextView
                 android:id="@+id/text_view_done_purposes_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/done_purposes"
                 android:textSize="24sp"
-                android:textColor="@android:color/white"
+                android:textColor="@color/color_text"
                 android:layout_margin="16dp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -103,7 +102,7 @@
                 android:id="@+id/show_expired_purposes_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
+                android:textColor="@color/color_text"
                 android:text="@string/show_expired_purposes"
                 android:textSize="16sp"
                 android:layout_margin="16dp"
@@ -111,7 +110,9 @@
                 android:textStyle="bold"
                 android:drawableLeft="@drawable/arrow_show"
                 app:layout_constraintTop_toBottomOf="@id/frame_layout_completed_list"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/expired_purposes_list"

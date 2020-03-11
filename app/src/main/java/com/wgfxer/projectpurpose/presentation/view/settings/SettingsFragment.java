@@ -14,11 +14,14 @@ import android.widget.TextView;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.PreferencesHelper;
 import com.wgfxer.projectpurpose.helper.Utils;
+import com.wgfxer.projectpurpose.presentation.view.addpurpose.DatePickerDialogFragment;
 
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.work.PeriodicWorkRequest;
@@ -42,6 +45,7 @@ public class SettingsFragment extends Fragment implements TimePickerDialogFragme
     private int notificationMinutes = 0;
 
     private TextView developerInfoTextView;
+    private Switch darkThemeSwitch;
 
 
     @Nullable
@@ -56,6 +60,7 @@ public class SettingsFragment extends Fragment implements TimePickerDialogFragme
         notificationsSwitch = view.findViewById(R.id.notifications_switch);
         notificationsTimeTextView = view.findViewById(R.id.time_notification_text_view);
         developerInfoTextView = view.findViewById(R.id.developer_info_text_view);
+        darkThemeSwitch = view.findViewById(R.id.dark_theme_switch);
         preferencesHelper = new PreferencesHelper(getContext());
 
         updateUiFromPreferences();
@@ -79,6 +84,14 @@ public class SettingsFragment extends Fragment implements TimePickerDialogFragme
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("https://vk.com/wgfxer"));
                 startActivity(intent);
+            }
+        });
+
+        darkThemeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setDarkTheme(isChecked);
+                preferencesHelper.putIsDarkTheme(isChecked);
             }
         });
     }
@@ -144,6 +157,17 @@ public class SettingsFragment extends Fragment implements TimePickerDialogFragme
         } else {
             disableViewNotificationTime();
         }
+
+        setDarkTheme(preferencesHelper.getIsDarkTheme());
+    }
+
+    private void setDarkTheme(boolean isDarkTheme){
+        if(isDarkTheme){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        darkThemeSwitch.setChecked(isDarkTheme);
     }
 
     /**
