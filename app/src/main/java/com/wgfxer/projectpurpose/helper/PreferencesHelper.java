@@ -11,6 +11,7 @@ public class PreferencesHelper {
     private static final String KEY_NOTIFICATION_MINUTES = "KEY_NOTIFICATION_MINUTES";
     private static final String KEY_IS_EXPIRED_PURPOSE_SHOW = "KEY_IS_EXPIRED_PURPOSE_SHOW";
     private static final String KEY_IS_DARK_THEME = "KEY_IS_DARK_THEME";
+    private static final String KEY_IS_DONE_TASKS_SHOW = "KEY_IS_DONE_TASKS_SHOW";
 
     private static final String KEY_PURPOSE_ID = "PURPOSE_ID";
 
@@ -70,5 +71,13 @@ public class PreferencesHelper {
 
     public boolean getIsDarkTheme(){
         return preferences.getBoolean(KEY_IS_DARK_THEME,false);
+    }
+
+    public void setIsDoneTasksShow(boolean isDoneTasksShow) {
+        this.preferences.edit().putBoolean(KEY_IS_DONE_TASKS_SHOW, isDoneTasksShow).apply();
+    }
+
+    public boolean getIsDoneTasksShow() {
+        return this.preferences.getBoolean(KEY_IS_DONE_TASKS_SHOW, false);
     }
 }

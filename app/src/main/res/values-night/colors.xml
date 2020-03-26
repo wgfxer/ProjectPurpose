@@ -27,5 +27,10 @@
     <color name="color_note_title">@android:color/white</color>
 
 
+    <!--    TabLayout-->
+    <color name="colorChipBg">#1a1e2c</color>
+    <color name="colorChipStroke">#292e38</color>
+
+
 
 </resources>

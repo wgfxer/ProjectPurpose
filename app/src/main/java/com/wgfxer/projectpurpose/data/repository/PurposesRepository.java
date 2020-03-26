@@ -66,11 +66,6 @@ public class PurposesRepository implements IPurposesRepository {
         return database.purposeDao().getPurposeById(id);
     }
 
-    @Override
-    public Purpose getPurposeByIdSync(int purposeId){
-        return database.purposeDao().getPurposeByIdAsync(purposeId);
-    }
-
     /**
      * Вставить цель
      *

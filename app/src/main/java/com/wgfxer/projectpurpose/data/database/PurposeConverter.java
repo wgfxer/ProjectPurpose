@@ -4,6 +4,7 @@ package com.wgfxer.projectpurpose.data.database;
 import com.wgfxer.projectpurpose.models.domain.Note;
 import com.wgfxer.projectpurpose.models.domain.PurposeTheme;
 import com.wgfxer.projectpurpose.models.domain.Report;
+import com.wgfxer.projectpurpose.models.domain.Task;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import androidx.room.TypeConverter;
 
@@ -20,19 +22,21 @@ import androidx.room.TypeConverter;
  * TypeConverter для полей Purpose
  */
 public class PurposeConverter {
-    private static final String KEY_IMAGE_PATH = "image_path";
-    private static final String KEY_GRADIENT_ID = "gradient_id";
     private static final String KEY_GRADIENT_ALPHA = "gradient_alpha";
+    private static final String KEY_GRADIENT_ID = "gradient_id";
+    private static final String KEY_IMAGE_PATH = "image_path";
     private static final String KEY_IS_WHITE_FONT = "is_white_font";
-
-    private static final String KEY_TITLE_RES_ID = "title_res_id";
-    private static final String KEY_BODY = "body";
-    private static final String KEY_HINT_RES_ID = "hint_res_id";
+    private static final String KEY_NOTE_BODY = "note_body";
+    private static final String KEY_NOTE_ID = "note_id";
+    private static final String KEY_NOTE_TITLE = "note_title";
+    private static final String KEY_REPORT_COULD_BETTER = "key_report_could_better";
     private static final String KEY_REPORT_DATE = "key_report_date";
-    private static final String KEY_REPORT_TITLE = "key_report_title";
     private static final String KEY_REPORT_DESCRIPTION = "key_report_description";
     private static final String KEY_REPORT_DID_GOOD = "key_report_did_good";
-    private static final String KEY_REPORT_COULD_BETTER = "key_report_could_better";
+    private static final String KEY_REPORT_TITLE = "key_report_title";
+    private static final String KEY_TASK_ID = "key_task_id";
+    private static final String KEY_TASK_IS_DONE = "key_task_is_done";
+    private static final String KEY_TASK_TITLE = "key_task_title";
 
 
     /**
@@ -118,13 +122,17 @@ public class PurposeConverter {
         for (Note note : notesList) {
             JSONObject jsonObjectNote = new JSONObject();
             try {
-                jsonObjectNote.put(KEY_TITLE_RES_ID, note.getTitleResourceId());
-                if (note.getBody() == null || note.getBody().isEmpty()) {
-                    jsonObjectNote.put(KEY_BODY, "null");
+                jsonObjectNote.put(KEY_NOTE_ID,note.getId());
+                if (note.getTitle() == null || note.getTitle().isEmpty()) {
+                    jsonObjectNote.put(KEY_NOTE_TITLE, "null");
                 } else {
-                    jsonObjectNote.put(KEY_BODY, note.getBody());
+                    jsonObjectNote.put(KEY_NOTE_TITLE, note.getTitle());
                 }
-                jsonObjectNote.put(KEY_HINT_RES_ID, note.getHintResourceId());
+                if (note.getBody() == null || note.getBody().isEmpty()) {
+                    jsonObjectNote.put(KEY_NOTE_BODY, "null");
+                } else {
+                    jsonObjectNote.put(KEY_NOTE_BODY, note.getBody());
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -144,15 +152,19 @@ public class PurposeConverter {
         List<Note> notesList = new ArrayList<>();
         try {
             JSONArray jsonArrayListNotes = new JSONArray(source);
+            String str = "null";
             for (int i = 0; i < jsonArrayListNotes.length(); i++) {
                 JSONObject jsonObjectNote = (JSONObject) jsonArrayListNotes.get(i);
                 Note note = new Note();
-                note.setTitleResourceId((Integer) jsonObjectNote.get(KEY_TITLE_RES_ID));
-                String body = (String) jsonObjectNote.get(KEY_BODY);
-                if (!body.equals("null")) {
+                note.setId(UUID.fromString((String) jsonObjectNote.get(KEY_NOTE_ID)));
+                String title = (String) jsonObjectNote.get(KEY_NOTE_TITLE);
+                if (!title.equals(str)) {
+                    note.setTitle(title);
+                }
+                String body = (String) jsonObjectNote.get(KEY_NOTE_BODY);
+                if (!body.equals(str)) {
                     note.setBody(body);
                 }
-                note.setHintResourceId((Integer) jsonObjectNote.get(KEY_HINT_RES_ID));
                 notesList.add(note);
             }
         } catch (JSONException e) {
@@ -243,4 +255,50 @@ public class PurposeConverter {
         }
         return reportsList;
     }
+
+    @TypeConverter
+    public String fromListTasks(List<Task> tasksList) {
+        JSONArray jsonArrayListTasks = new JSONArray();
+        for (Task task : tasksList) {
+            JSONObject jsonObjectTask = new JSONObject();
+            try {
+                jsonObjectTask.put(KEY_TASK_ID, task.getId().toString());
+                jsonObjectTask.put(KEY_TASK_IS_DONE, task.isDone());
+                if (task.getTitle() != null && !task.getTitle().isEmpty()) {
+                    jsonObjectTask.put(KEY_TASK_TITLE, task.getTitle());
+                }else{
+                    jsonObjectTask.put(KEY_TASK_TITLE, "null");
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            jsonArrayListTasks.put(jsonObjectTask);
+        }
+        return jsonArrayListTasks.toString();
+    }
+
+    @TypeConverter
+    public List<Task> toListTasks(String source) {
+        List<Task> tasksList = new ArrayList<>();
+        try {
+            JSONArray jsonArrayListTasks = new JSONArray(source);
+            for (int i = 0; i < jsonArrayListTasks.length(); i++) {
+                JSONObject jsonObjectTask = (JSONObject) jsonArrayListTasks.get(i);
+                Task task = new Task();
+                task.setId(UUID.fromString((String) jsonObjectTask.get(KEY_TASK_ID)));
+                task.setDone(jsonObjectTask.getBoolean(KEY_TASK_IS_DONE));
+                String title = (String) jsonObjectTask.get(KEY_TASK_TITLE);
+                if (!title.equals("null")) {
+                    task.setTitle(title);
+                }
+                tasksList.add(task);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return tasksList;
+    }
+
+
 }

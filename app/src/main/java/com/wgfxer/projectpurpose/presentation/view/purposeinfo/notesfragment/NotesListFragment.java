@@ -1,62 +1,77 @@
 package com.wgfxer.projectpurpose.presentation.view.purposeinfo.notesfragment;
 
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-
-import com.wgfxer.projectpurpose.R;
-import com.wgfxer.projectpurpose.models.data.Purpose;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.wgfxer.projectpurpose.R;
+import com.wgfxer.projectpurpose.domain.ICanShowNote;
+import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.domain.Note;
+import com.wgfxer.projectpurpose.presentation.view.purposeinfo.notesfragment.NotesAdapter.OnNoteClickListener;
+import com.wgfxer.projectpurpose.presentation.view.purposeinfo.notesfragment.NotesAdapter.OnNoteDeleteClickListener;
+import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
 
-/**
- * Фрагмент содержащий ViewPager с заметками
- */
 public class NotesListFragment extends Fragment {
-
-    private static final String KEY_CURRENT_PAGE = "KEY_CURRENT_PAGE";
     private static final String KEY_PURPOSE_ID = "KEY_PURPOSE_ID";
-    private ViewPager notesViewPager;
+    private ICanShowNote canShowNote;
+    private Button newNoteButton;
     private NotesAdapter notesAdapter;
-
-    private Purpose purpose;
+    private RecyclerView notesRecyclerView;
+    public Purpose purpose;
     private MainViewModel viewModel;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        setRetainInstance(true);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.notes_list_fragment, container, false);
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable final Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        notesViewPager = view.findViewById(R.id.notes_view_pager);
-        float dip = 10f;
-        Resources r = getResources();
-        float px = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dip,
-                r.getDisplayMetrics()
-        );
-        notesViewPager.setPageMargin((int) px);
-        notesAdapter = new NotesAdapter(getChildFragmentManager());
-        notesViewPager.setAdapter(notesAdapter);
-        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
-                .get(MainViewModel.class);
+        if (getTargetFragment() instanceof ICanShowNote) {
+            canShowNote = (ICanShowNote) getTargetFragment();
+        }
+        notesRecyclerView =  view.findViewById(R.id.notes_recycler_view);
+        newNoteButton = view.findViewById(R.id.new_note_button);
+        newNoteButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Note newNote = new Note();
+                purpose.getNotesList().add(newNote);
+                viewModel.updatePurpose(purpose);
+                if (canShowNote != null) {
+                    canShowNote.showNote(newNote);
+                }
+            }
+        });
+        notesAdapter = new NotesAdapter();
+        notesAdapter.setOnNoteClickListener(new OnNoteClickListener() {
+            public void onNoteClicked(Note note) {
+                if (canShowNote != null) {
+                    canShowNote.showNote(note);
+                }
+            }
+        });
+        notesAdapter.setOnNoteDeleteClickListener(new OnNoteDeleteClickListener() {
+            public void onNoteDeleteClicked(Note note) {
+                for (int i = 0; i < NotesListFragment.this.purpose.getNotesList().size(); i++) {
+                    if ((purpose.getNotesList().get(i)).getId().equals(note.getId())) {
+                        purpose.getNotesList().remove(i);
+                        viewModel.updatePurpose(purpose);
+                    }
+                }
+            }
+        });
+        notesRecyclerView.setAdapter(notesAdapter);
+        notesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext())).get(MainViewModel.class);
         viewModel.getPurposeById(getArguments().getInt(KEY_PURPOSE_ID)).observe(this, new Observer<Purpose>() {
-            @Override
             public void onChanged(Purpose purpose) {
                 if (purpose != null) {
                     NotesListFragment.this.purpose = purpose;
@@ -64,54 +79,13 @@ public class NotesListFragment extends Fragment {
                 }
             }
         });
-        if (savedInstanceState != null) {
-            notesViewPager.postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    notesViewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_PAGE));
-                }
-            }, 1);
-            //notesViewPager.setCurrentItem(savedInstanceState.getInt(KEY_CURRENT_PAGE)); почему-то не работает
-
-        }
     }
 
-    /**
-     * сохранение заметок
-     */
-    @Override
-    public void onPause() {
-        super.onPause();
-        purpose.setNotesList(notesAdapter.getNotesList());
-        viewModel.updatePurpose(purpose);
-    }
-
-
-    /**
-     * Сохранение состояние(открытая страница)
-     *
-     * @param outState
-     */
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_CURRENT_PAGE, notesViewPager.getCurrentItem());
-    }
-
-    /**
-     * Создает и возвращает экземпляр фрагмента с заметками для конкретной цели
-     *
-     * @param purposeId
-     * @return
-     */
     public static NotesListFragment newInstance(int purposeId) {
-
         Bundle args = new Bundle();
         args.putInt(KEY_PURPOSE_ID, purposeId);
         NotesListFragment fragment = new NotesListFragment();
         fragment.setArguments(args);
         return fragment;
     }
-
 }

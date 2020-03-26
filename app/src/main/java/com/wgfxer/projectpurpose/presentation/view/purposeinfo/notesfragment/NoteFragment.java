@@ -7,90 +7,69 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
+import androidx.fragment.app.Fragment;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.models.domain.Note;
+import java.util.UUID;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-
-/**
- * Фрагмент для отображения одной заметки для ViewPager
- */
 public class NoteFragment extends Fragment {
-    private static final String EXTRA_NOTE_TITLE_RES_ID = "note_title_res_id";
     private static final String EXTRA_NOTE_BODY = "note_body";
-    private static final String EXTRA_NOTE_HINT_RES_ID = "note_hint_res_id";
-
+    private static final String EXTRA_NOTE_ID = "note_id";
+    private static final String EXTRA_NOTE_TITLE = "note_title";
+    private UUID noteId;
     private OnNoteChangedListener onNoteChangedListener;
 
-    private void setOnNoteChangedListener(OnNoteChangedListener onNoteChangedListener) {
-        this.onNoteChangedListener = onNoteChangedListener;
+    public interface OnNoteChangedListener {
+        void onNoteChanged(Note note);
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.notes_list_item, container, false);
+    private void setOnNoteChangedListener(OnNoteChangedListener onNoteChangedListener2) {
+        this.onNoteChangedListener = onNoteChangedListener2;
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.note_fragment, container, false);
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        int titleResId = getArguments().getInt(EXTRA_NOTE_TITLE_RES_ID);
+        noteId = (UUID) getArguments().getSerializable(EXTRA_NOTE_ID);
+        String title = getArguments().getString(EXTRA_NOTE_TITLE);
         String body = getArguments().getString(EXTRA_NOTE_BODY);
-        int hintResId = getArguments().getInt(EXTRA_NOTE_HINT_RES_ID);
-        TextView noteTitleTextView = view.findViewById(R.id.note_title_text_view);
-        EditText noteBodyEditText = view.findViewById(R.id.note_body_edit_text);
-        noteTitleTextView.setText(titleResId);
+        final EditText noteTitleEditText =  view.findViewById(R.id.note_title_edit_text);
+        final EditText noteBodyEditText =  view.findViewById(R.id.note_body_edit_text);
+        noteTitleEditText.setText(title);
         noteBodyEditText.setText(body);
-        noteBodyEditText.setHint(hintResId);
-
-        noteBodyEditText.addTextChangedListener(new TextWatcher() {
-            @Override
+        TextWatcher textWatcher = new TextWatcher() {
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
-            @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (onNoteChangedListener != null) {
-                    onNoteChangedListener.onNoteChanged(charSequence.toString());
+                    Note note = new Note();
+                    note.setId(NoteFragment.this.noteId);
+                    note.setTitle(noteTitleEditText.getText().toString());
+                    note.setBody(noteBodyEditText.getText().toString());
+                    onNoteChangedListener.onNoteChanged(note);
                 }
             }
 
-            @Override
             public void afterTextChanged(Editable editable) {
-
             }
-        });
+        };
+        noteTitleEditText.addTextChangedListener(textWatcher);
+        noteBodyEditText.addTextChangedListener(textWatcher);
     }
 
-    /**
-     * создает и возвращает экземпляр фрагмента с заметкой
-     *
-     * @param note                  заполняет view этой заметкой
-     * @param onNoteChangedListener устанавливает слушатель на изменение
-     * @return возвращает экземпляр
-     */
-    public static NoteFragment newInstance(Note note, OnNoteChangedListener onNoteChangedListener) {
-
+    public static NoteFragment newInstance(Note note, OnNoteChangedListener onNoteChangedListener2) {
         Bundle args = new Bundle();
-        args.putInt(EXTRA_NOTE_TITLE_RES_ID, note.getTitleResourceId());
+        args.putSerializable(EXTRA_NOTE_ID, note.getId());
+        args.putString(EXTRA_NOTE_TITLE, note.getTitle());
         args.putString(EXTRA_NOTE_BODY, note.getBody());
-        args.putInt(EXTRA_NOTE_HINT_RES_ID, note.getHintResourceId());
         NoteFragment fragment = new NoteFragment();
         fragment.setArguments(args);
-        fragment.setOnNoteChangedListener(onNoteChangedListener);
+        fragment.setOnNoteChangedListener(onNoteChangedListener2);
         return fragment;
-    }
-
-    /**
-     * интерфейс для прослушивания осбытия изменения заметки
-     */
-    interface OnNoteChangedListener {
-        void onNoteChanged(String body);
     }
 }

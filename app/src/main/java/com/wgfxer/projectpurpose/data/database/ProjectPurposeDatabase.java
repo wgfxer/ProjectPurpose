@@ -12,7 +12,7 @@ import androidx.room.RoomDatabase;
 /**
  * БД для хранения целей
  */
-@Database(entities = {Purpose.class}, version = 3, exportSchema = false)
+@Database(entities = {Purpose.class}, version = 4, exportSchema = false)
 public abstract class ProjectPurposeDatabase extends RoomDatabase {
     private static ProjectPurposeDatabase instance;
     private static final String DB_NAME = "project_purpose.db";
@@ -30,7 +30,6 @@ public abstract class ProjectPurposeDatabase extends RoomDatabase {
             if (instance == null) {
                 instance = Room.databaseBuilder(context, ProjectPurposeDatabase.class, DB_NAME)
                         .fallbackToDestructiveMigration()
-                        .allowMainThreadQueries()
                         .build();
             }
         }

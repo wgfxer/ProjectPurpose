@@ -77,5 +77,12 @@
     <string name="item_developer_info_text">Информация о разработчике</string>
     <string name="show_expired_purposes">Показать просроченные цели</string>
     <string name="hide_expired_purposes">Скрыть просроченные цели</string>
+    <string name="new_task_text">Новая задача</string>
+    <string name="show_done_tasks">Показать выполненные задачи</string>
+    <string name="hide_done_tasks">Скрыть выполненные задачи</string>
+    <string name="delete_note_text">Удалить заметку</string>
+    <string name="new_note_text">Новая заметка</string>
+    <string name="note_title_hint">Название</string>
+    <string name="note_body_hint">Текст</string>
 
 </resources>

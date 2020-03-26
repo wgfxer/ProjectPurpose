@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.models.data.Purpose;
@@ -39,10 +41,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.viewpager.widget.ViewPager;
 
 
 /**
@@ -50,45 +54,29 @@ import androidx.lifecycle.ViewModelProviders;
  */
 public class PurposeInfoActivity extends AppCompatActivity implements EditThemeDialogFragment.OnThemeChangeListener {
     private static final String KEY_PURPOSE_ID = "PURPOSE_ID";
-    private static final String KEY_SELECTED_MODE = "SELECTED_MODE";
-    private static final int SELECTED_MODE_NOTES = 1;
-    private static final int SELECTED_MODE_REPORTS = 2;
-
-    private Purpose purpose;
-
-    private TextView purposeTitleTextView;
-    private ImageView toolbarImage;
-    private ImageView toolbarGradient;
-    private TextView daysLeftTextView;
-    private FragmentManager fragmentManager;
-
-    private MainViewModel viewModel;
-
-    private NotesListFragment notesListFragment;
-    private ReportsFragment reportsFragment;
-    private Button showReportsButton;
-    private Button showNotesButton;
-    private int currentMode = SELECTED_MODE_NOTES;
-
-    private Menu menu;
-    private Toolbar toolbar;
-    private CollapsingToolbarLayout collapsingToolbar;
     private AppBarLayout appBar;
-
+    private CollapsingToolbarLayout collapsingToolbar;
+    private TextView daysLeftTextView;
+    private Menu menu;
     private AppBarLayout.OnOffsetChangedListener onOffsetChangedListener;
+    private Purpose purpose;
+    private ViewPager purposeDetailPager;
+    private TextView purposeTitleTextView;
+    private TabLayout tabLayout;
+    private Toolbar toolbar;
+    private ImageView toolbarGradient;
+    private ImageView toolbarImage;
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_purpose_info);
 
-        setUpViews();
-
+        findViews();
+        setUpViewPager();
+        setUpToolbar();
         observeViewModel();
-
-        if (savedInstanceState != null) {
-            switchMode(savedInstanceState.getInt(KEY_SELECTED_MODE));
-        }
 
     }
 
@@ -181,57 +169,48 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         viewModel.updatePurpose(purpose);
     }
 
-    /**
-     * находит все вью и устанавливает лисенеры
-     */
-    private void setUpViews() {
+    private void findViews() {
         purposeTitleTextView = findViewById(R.id.purpose_title_text_view);
         toolbarImage = findViewById(R.id.toolbar_image);
         toolbarGradient = findViewById(R.id.toolbar_gradient);
-        daysLeftTextView = findViewById(R.id.days_left);
-
+        daysLeftTextView =  findViewById(R.id.days_left);
         toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        fragmentManager = getSupportFragmentManager();
-        notesListFragment = NotesListFragment.newInstance(getIntent().getIntExtra(KEY_PURPOSE_ID, -1));
-        reportsFragment = ReportsFragment.newInstance(getIntent().getIntExtra(KEY_PURPOSE_ID, -1));
-        if (fragmentManager.findFragmentById(R.id.fragment_container) == null) {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, notesListFragment).commit();
-        }
-
-        showNotesButton = findViewById(R.id.show_notes_button);
-        showReportsButton = findViewById(R.id.show_reports_button);
-        showNotesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchMode(SELECTED_MODE_NOTES);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, notesListFragment).commit();
-            }
-        });
-        showReportsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switchMode(SELECTED_MODE_REPORTS);
-                fragmentManager.beginTransaction().replace(R.id.fragment_container, reportsFragment).commit();
-            }
-        });
-
         collapsingToolbar =  findViewById(R.id.collapsing_toolbar);
-        appBar = findViewById(R.id.appbar_layout);
+        appBar =  findViewById(R.id.appbar_layout);
+        purposeDetailPager =  findViewById(R.id.view_pager);
+        tabLayout =  findViewById(R.id.tab_layout);
+    }
+
+    private void setUpToolbar() {
+        setSupportActionBar(this.toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         onOffsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
-            @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) {
                     setToolbarIconsColor(android.R.color.white);
-                } else if (verticalOffset == 0){
+                } else if (verticalOffset == 0) {
                     setToolbarIconsColor(android.R.color.black);
                 }
             }
         };
     }
 
+    private void setUpViewPager() {
+        purposeDetailPager.setAdapter(new PurposeDetailPagerAdapter(getSupportFragmentManager(),
+                getIntent().getIntExtra(KEY_PURPOSE_ID, -1)));
+        tabLayout.setupWithViewPager(purposeDetailPager);
+        tabLayout.setTabTextColors(getResources().getColor(R.color.colorChipStroke), getResources().getColor(R.color.colorPrimary));
+        tabLayout.setBackgroundResource(android.R.color.transparent);
+        for (int i = 0; i <= tabLayout.getTabCount() - 1; i++) {
+            View tab = ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(i);
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) tab.getLayoutParams();
+            p.setMargins(25, 0, 0, 0);
+            if (i == this.tabLayout.getTabCount() - 1) {
+                p.setMargins(25, 0, 25, 0);
+            }
+            tab.requestLayout();
+        }
+    }
 
     /**
      * Устанавливает цвет иконок в тулбаре
@@ -253,36 +232,14 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         toolbar.getOverflowIcon().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
-    /**
-     * меняет режим просмотра(заметки или отчеты)
-     *
-     * @param mode константа для отчетов или для заметок
-     */
-    private void switchMode(int mode) {
-        int enabledButtonColor = getResources().getColor(R.color.enabled_button_color);
-        int disabledButtonColor = getResources().getColor(R.color.disabled_button_color);
-        if (mode == SELECTED_MODE_NOTES) {
-            showNotesButton.setTextColor(enabledButtonColor);
-            showReportsButton.setTextColor(disabledButtonColor);
-            currentMode = SELECTED_MODE_NOTES;
-        } else if (mode == SELECTED_MODE_REPORTS) {
-            showNotesButton.setTextColor(disabledButtonColor);
-            showReportsButton.setTextColor(enabledButtonColor);
-            currentMode = SELECTED_MODE_REPORTS;
-        }
-    }
 
     /**
      * подписка на вьюмодель,при изменении цели обновление ui
      */
     private void observeViewModel() {
-        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(this))
-                .get(MainViewModel.class);
-
-        LiveData<Purpose> purposeLiveData = viewModel.getPurposeById(getIntent().getIntExtra(KEY_PURPOSE_ID, -1));
-        purposeLiveData.observe(this, new Observer<Purpose>() {
-            @Override
-            public void onChanged(@Nullable Purpose purpose) {
+        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(this)).get(MainViewModel.class);
+        viewModel.getPurposeById(getIntent().getIntExtra(KEY_PURPOSE_ID, -1)).observe(this, new Observer<Purpose>() {
+            public void onChanged(Purpose purpose) {
                 PurposeInfoActivity.this.purpose = purpose;
                 if (purpose != null) {
                     updateUI();
@@ -302,41 +259,41 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         if (purpose.getTheme().getImagePath() != null) {
             toolbarImage.setImageBitmap(BitmapFactory.decodeFile(purpose.getTheme().getImagePath()));
         } else {
-            toolbarGradient.setAlpha(1f);
+            toolbarGradient.setAlpha(1.0f);
         }
         if (purpose.getDate().after(new Date())) {
             int daysToGoal = Utils.getDaysFromDate(purpose.getDate());
-            daysLeftTextView.setText(getResources().getQuantityString(R.plurals.days_count, daysToGoal, daysToGoal));
+            daysLeftTextView.setText(getResources().getQuantityString(R.plurals.days_count, daysToGoal, new Object[]{Integer.valueOf(daysToGoal)}));
         } else {
             daysLeftTextView.setText(getString(R.string.time_end_text));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            GradientDrawable gradientDrawable = (GradientDrawable) getDrawable(purpose.getTheme().getGradientId());
-            daysLeftTextView.setTextColor(gradientDrawable.getColors()[1]);
+            int themeColor = ((GradientDrawable) getDrawable(purpose.getTheme().getGradientId())).getColors()[1];
+            daysLeftTextView.setTextColor(themeColor);
+            tabLayout.setTabTextColors(getResources().getColor(R.color.colorChipStroke, getTheme()), themeColor);
         }
         Drawable textViewBackground = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             textViewBackground = getDrawable(R.drawable.white_background_text_view);
         }
         if (purpose.getTheme().isWhiteFont()) {
             purposeTitleTextView.setTextColor(Color.WHITE);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && textViewBackground != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && textViewBackground != null) {
                 textViewBackground.setTint(Color.WHITE);
             }
             setToolbarIconsColor(android.R.color.white);
-            appBar.removeOnOffsetChangedListener(onOffsetChangedListener);
+            this.appBar.removeOnOffsetChangedListener(this.onOffsetChangedListener);
         } else {
             purposeTitleTextView.setTextColor(Color.BLACK);
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && textViewBackground != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && textViewBackground != null) {
                 textViewBackground.setTint(Color.BLACK);
             }
             setToolbarIconsColor(android.R.color.black);
-            appBar.addOnOffsetChangedListener(onOffsetChangedListener);
+            this.appBar.addOnOffsetChangedListener(this.onOffsetChangedListener);
         }
         if (textViewBackground != null) {
             daysLeftTextView.setBackground(textViewBackground);
         }
-
     }
 
     /**
@@ -403,14 +360,4 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
         startActivity(intent);
     }
 
-    /**
-     * сохранение выбранного мода
-     *
-     * @param outState
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(KEY_SELECTED_MODE, currentMode);
-    }
 }

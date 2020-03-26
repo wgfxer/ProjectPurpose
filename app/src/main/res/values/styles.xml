@@ -22,5 +22,15 @@
 
     <style name="SwitchTheme" parent="@style/ThemeOverlay.AppCompat.Light"/>
 
+    <style name="ChipTabLayout"   parent="@style/Widget.Design.TabLayout">
+        <item name="tabBackground">@drawable/selector_tab</item>
+        <item name="tabIndicatorColor">@android:color/transparent</item>
+        <item name="tabTextAppearance">@style/MyCustomTextAppearance</item>
+    </style>
+
+    <style name="MyCustomTextAppearance" parent="@style/TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
+
 
 </resources>

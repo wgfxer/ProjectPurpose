@@ -74,7 +74,4 @@ public interface PurposeDao {
      */
     @Query("SELECT * FROM purposes WHERE id = :purposeId")
     LiveData<Purpose> getPurposeById(int purposeId);
-
-    @Query("SELECT * FROM purposes WHERE id = :purposeId")
-    Purpose getPurposeByIdAsync(int purposeId);
 }

@@ -20,8 +20,6 @@ public interface IPurposesRepository {
 
     LiveData<Purpose> getPurposeById(int id);
 
-    Purpose getPurposeByIdSync(int purposeId);
-
     void insertPurpose(Purpose purpose);
 
     void updatePurpose(Purpose purpose);
