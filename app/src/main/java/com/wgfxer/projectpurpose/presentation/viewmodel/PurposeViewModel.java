@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
 import com.wgfxer.projectpurpose.presentation.view.widget.WidgetProvider;
 
 import java.util.List;

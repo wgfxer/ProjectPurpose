@@ -1,7 +1,7 @@
 package com.wgfxer.projectpurpose.presentation.viewmodel;
 
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
 
 import org.junit.Before;
 import org.junit.Rule;
