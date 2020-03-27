@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.domain.PositionKeeper;
-import com.wgfxer.projectpurpose.models.domain.Task;
+import com.wgfxer.projectpurpose.models.Task;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +26,7 @@ public class TasksAdapter extends Adapter<ViewHolder> {
     private boolean canCreateNewTasks;
     private boolean needToFocusLastTask = false;
     private boolean needToFocusNewTask = false;
+    private OnTaskChangeListener onTaskChangeListener;
     private OnNewTaskClickListener onNewTaskClickListener;
     private OnTaskDeleteClickListener onTaskDeleteClickListener;
     private OnTaskDoneClickListener onTaskDoneClickListener;
@@ -77,6 +78,10 @@ public class TasksAdapter extends Adapter<ViewHolder> {
         }
     }
 
+    public interface OnTaskChangeListener{
+        void onTaskChange(Task task);
+    }
+
     public interface OnNewTaskClickListener {
         void onNewTaskClicked();
     }
@@ -98,6 +103,9 @@ public class TasksAdapter extends Adapter<ViewHolder> {
             Task task = tasksList.get(position);
             if (task != null) {
                 task.setTitle(charSequence.toString());
+                if(onTaskChangeListener != null){
+                    onTaskChangeListener.onTaskChange(task);
+                }
             }
         }
 
@@ -173,8 +181,14 @@ public class TasksAdapter extends Adapter<ViewHolder> {
     }
 
     public void setTasksList(List<Task> tasksList) {
-        this.tasksList = tasksList;
-        notifyDataSetChanged();
+        if(!this.tasksList.equals(tasksList)){
+            this.tasksList = tasksList;
+            notifyDataSetChanged();
+        }
+    }
+
+    public void setOnTaskChangeListener(OnTaskChangeListener onTaskChangeListener) {
+        this.onTaskChangeListener = onTaskChangeListener;
     }
 
     public void setOnNewTaskClickListener(OnNewTaskClickListener onNewTaskClickListener) {

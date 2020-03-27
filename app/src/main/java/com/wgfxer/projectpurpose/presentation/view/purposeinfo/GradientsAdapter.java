@@ -62,7 +62,7 @@ public class GradientsAdapter extends RecyclerView.Adapter<GradientsAdapter.Grad
                 public void onClick(View view) {
                     positionChecked = getAdapterPosition();
                     if (onGradientClickListener != null) {
-                        onGradientClickListener.onGradientClick(gradientResourceId);
+                        onGradientClickListener.onGradientClick(positionChecked);
                     }
                     notifyDataSetChanged();
                 }
@@ -75,6 +75,6 @@ public class GradientsAdapter extends RecyclerView.Adapter<GradientsAdapter.Grad
      * интерфейс для обработки клика на градиент
      */
     interface OnGradientClickListener {
-        void onGradientClick(int gradientResourceId);
+        void onGradientClick(int gradientPosition);
     }
 }

@@ -1,49 +1,40 @@
-package com.wgfxer.projectpurpose.models.domain;
+package com.wgfxer.projectpurpose.models;
 
 import com.wgfxer.projectpurpose.R;
 
-import androidx.annotation.NonNull;
-
 /**
- * Тема цели
+ * Модель для темы цели
  */
 public class PurposeTheme {
-    /**
-     * путь к изображению
-     */
-    private String imagePath;
-    /**
-     * id ресурса градиента темы
-     */
-    private int gradientId;
-    /**
-     * прозрачность градиента
-     */
-    private float gradientAlpha;
-    /**
-     * белые ли буквы в теме
-     */
-    private boolean isWhiteFont;
 
-    public PurposeTheme() {
-        int[] gradients = new int[]{
-                R.drawable.gradient1,  //исправить, если добавим новый градиент,то постоянно придется пополнять список
-                R.drawable.gradient2,                       //плюс можно забыть
-                R.drawable.gradient3,
-                R.drawable.gradient4,
-                R.drawable.gradient5,
-                R.drawable.gradient6,
-                R.drawable.gradient7,
-                R.drawable.gradient8,
-                R.drawable.gradient9,
-                R.drawable.gradient10,
-                R.drawable.gradient11,
-                R.drawable.gradient12};
-        int randomGradientIndex = (int) (Math.random() * gradients.length);
-        gradientId = gradients[randomGradientIndex];
-        gradientAlpha = 0.8f;
-        isWhiteFont = true;
-    }
+    public static final int[] GRADIENTS = new int[]{
+            R.drawable.gradient1,
+            R.drawable.gradient2,
+            R.drawable.gradient3,
+            R.drawable.gradient4,
+            R.drawable.gradient5,
+            R.drawable.gradient6,
+            R.drawable.gradient7,
+            R.drawable.gradient8,
+            R.drawable.gradient9,
+            R.drawable.gradient10,
+            R.drawable.gradient11,
+            R.drawable.gradient12,
+            R.drawable.gradient13,
+            R.drawable.gradient14,
+            R.drawable.gradient15,
+            R.drawable.gradient16,
+            R.drawable.gradient17,
+            R.drawable.gradient18,
+            R.drawable.gradient19,
+            R.drawable.gradient20
+
+    };
+
+    private String imagePath;
+    private int gradientPosition = (int) (Math.random() * GRADIENTS.length);
+    private float gradientAlpha = 0.8f;
+    private boolean isWhiteFont = true;
 
     public String getImagePath() {
         return imagePath;
@@ -53,12 +44,12 @@ public class PurposeTheme {
         this.imagePath = imagePath;
     }
 
-    public int getGradientId() {
-        return gradientId;
+    public int getGradientPosition() {
+        return gradientPosition;
     }
 
-    public void setGradientId(int gradientId) {
-        this.gradientId = gradientId;
+    public void setGradientPosition(int gradientPosition) {
+        this.gradientPosition = gradientPosition;
     }
 
     public float getGradientAlpha() {
@@ -84,7 +75,7 @@ public class PurposeTheme {
 
         PurposeTheme that = (PurposeTheme) o;
 
-        if (gradientId != that.gradientId) return false;
+        if (gradientPosition != that.gradientPosition) return false;
         if (Float.compare(that.gradientAlpha, gradientAlpha) != 0) return false;
         if (isWhiteFont != that.isWhiteFont) return false;
         return imagePath != null ? imagePath.equals(that.imagePath) : that.imagePath == null;
@@ -93,18 +84,17 @@ public class PurposeTheme {
     @Override
     public int hashCode() {
         int result = imagePath != null ? imagePath.hashCode() : 0;
-        result = 31 * result + gradientId;
+        result = 31 * result + gradientPosition;
         result = 31 * result + (gradientAlpha != +0.0f ? Float.floatToIntBits(gradientAlpha) : 0);
         result = 31 * result + (isWhiteFont ? 1 : 0);
         return result;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "PurposeTheme{" +
                 "imagePath='" + imagePath + '\'' +
-                ", gradientId=" + gradientId +
+                ", gradientPosition=" + gradientPosition +
                 ", gradientAlpha=" + gradientAlpha +
                 ", isWhiteFont=" + isWhiteFont +
                 '}';

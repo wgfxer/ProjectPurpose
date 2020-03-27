@@ -2,16 +2,14 @@ package com.wgfxer.projectpurpose.presentation.view.purposeinfo;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 
 import com.wgfxer.projectpurpose.R;
-import com.wgfxer.projectpurpose.models.domain.PurposeTheme;
+import com.wgfxer.projectpurpose.models.PurposeTheme;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -24,11 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class EditThemeDialogFragment extends DialogFragment {
     private static final String EXTRA_IMAGE_PATH = "image_path";
-    private static final String EXTRA_GRADIENT_ID = "gradient_id";
+    private static final String EXTRA_GRADIENT_NUMBER = "gradient_number";
     private static final String EXTRA_GRADIENT_ALPHA = "gradient_alpha";
     private static final String EXTRA_IS_WHITE_FONT = "is_white_font";
 
-    private static final String KEY_GRADIENT_ID = "KEY_GRADIENT_ID";
+    private static final String KEY_GRADIENT_NUMBER = "KEY_GRADIENT_NUMBER";
     private static final String KEY_IS_WHITE_FONT = "KEY_IS_WHITE_FONT";
 
 
@@ -52,37 +50,60 @@ public class EditThemeDialogFragment extends DialogFragment {
 
         purposeTheme = new PurposeTheme();
         purposeTheme.setImagePath(getArguments().getString(EXTRA_IMAGE_PATH));
-        purposeTheme.setGradientId(getArguments().getInt(EXTRA_GRADIENT_ID));
+        purposeTheme.setGradientPosition(getArguments().getInt(EXTRA_GRADIENT_NUMBER));
         purposeTheme.setGradientAlpha(getArguments().getFloat(EXTRA_GRADIENT_ALPHA));
         purposeTheme.setWhiteFont(getArguments().getBoolean(EXTRA_IS_WHITE_FONT));
 
         if (savedInstanceState != null) {
-            purposeTheme.setGradientId(savedInstanceState.getInt(KEY_GRADIENT_ID));
+            purposeTheme.setGradientPosition(savedInstanceState.getInt(KEY_GRADIENT_NUMBER));
             purposeTheme.setWhiteFont(savedInstanceState.getBoolean(KEY_IS_WHITE_FONT));
         }
 
-        TypedArray typedArrayGradients = getResources().obtainTypedArray(R.array.gradients_array);
-        int[] gradients = new int[typedArrayGradients.length()];
-        for (int i = 0; i < gradients.length; i++) {
-            gradients[i] = typedArrayGradients.getResourceId(i, 0);
-        }
-        typedArrayGradients.recycle();
-        int selectedGradientPosition = 0;
-        for (int i = 0; i < gradients.length; i++) {
-            if (gradients[i] == purposeTheme.getGradientId()) {
-                selectedGradientPosition = i;
-            }
-        }
-        RecyclerView recyclerViewGradients = v.findViewById(R.id.recycler_view_gradients);
-        recyclerViewGradients.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        GradientsAdapter adapter = new GradientsAdapter(gradients, new GradientsAdapter.OnGradientClickListener() {
-            @Override
-            public void onGradientClick(int gradientResourceId) {
-                purposeTheme.setGradientId(gradientResourceId);
-            }
-        }, selectedGradientPosition);
-        recyclerViewGradients.setAdapter(adapter);
+        setupGradientsRecycler(v);
 
+        setupAlphaSeekbar(v);
+
+        setupCheckbox(v);
+
+        return new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.edit_theme_text)
+                .setView(v)
+                .setPositiveButton(R.string.dialog_ok_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (onThemeChangeListener != null) {
+                            onThemeChangeListener.onThemeChange(purposeTheme);
+                        }
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel_text, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create();
+    }
+
+    /**
+     * Инициализация чекбокса для выбора светлой или темной темы цели
+     */
+    private void setupCheckbox(View v) {
+        final CheckBox isWhiteFontCheckBox = v.findViewById(R.id.checkbox_is_white_font);
+        isWhiteFontCheckBox.setChecked(purposeTheme.isWhiteFont());
+        isWhiteFontCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                purposeTheme.setWhiteFont(isWhiteFontCheckBox.isChecked());
+            }
+        });
+    }
+
+    /**
+     * Инициализация ползунка для выбора прозрачности градиента
+     */
+    private void setupAlphaSeekbar(View v) {
         SeekBar seekbarGradientAlpha = v.findViewById(R.id.seekbar_gradient_alpha);
         seekbarGradientAlpha.setProgress((int) (purposeTheme.getGradientAlpha() * 100));
         seekbarGradientAlpha.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -101,51 +122,40 @@ public class EditThemeDialogFragment extends DialogFragment {
 
             }
         });
-
-        final CheckBox isWhiteFontCheckBox = v.findViewById(R.id.checkbox_is_white_font);
-        isWhiteFontCheckBox.setChecked(purposeTheme.isWhiteFont());
-        isWhiteFontCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                purposeTheme.setWhiteFont(isWhiteFontCheckBox.isChecked());
-            }
-        });
-
-        return new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.edit_theme_text)
-                .setView(v)
-                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (onThemeChangeListener != null) {
-                            onThemeChangeListener.onThemeChange(purposeTheme);
-                        }
-                        dialogInterface.dismiss();
-                    }
-                })
-                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .create();
     }
 
+    /**
+     * Инициализация RecyclerView для выбора градиента
+     */
+    private void setupGradientsRecycler(View v) {
+        RecyclerView recyclerViewGradients = v.findViewById(R.id.recycler_view_gradients);
+        recyclerViewGradients.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        GradientsAdapter adapter = new GradientsAdapter(PurposeTheme.GRADIENTS, new GradientsAdapter.OnGradientClickListener() {
+            @Override
+            public void onGradientClick(int gradientNumber) {
+                purposeTheme.setGradientPosition(gradientNumber);
+            }
+        }, purposeTheme.getGradientPosition());
+        recyclerViewGradients.setAdapter(adapter);
+    }
+
+    /**
+     * Сохранение состояния при смене конфигурации
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(KEY_GRADIENT_ID, purposeTheme.getGradientId());
+        outState.putInt(KEY_GRADIENT_NUMBER, purposeTheme.getGradientPosition());
         outState.putBoolean(KEY_IS_WHITE_FONT, purposeTheme.isWhiteFont());
     }
 
     /**
-     * создает и возвращает экземпляр фрагмента для заданной темы
+     * Создает и возвращает экземпляр диалога для заданной темы
      */
     public static EditThemeDialogFragment newInstance(PurposeTheme theme) {
         Bundle args = new Bundle();
         args.putString(EXTRA_IMAGE_PATH, theme.getImagePath());
-        args.putInt(EXTRA_GRADIENT_ID, theme.getGradientId());
+        args.putInt(EXTRA_GRADIENT_NUMBER, theme.getGradientPosition());
         args.putFloat(EXTRA_GRADIENT_ALPHA, theme.getGradientAlpha());
         args.putBoolean(EXTRA_IS_WHITE_FONT, theme.isWhiteFont());
 

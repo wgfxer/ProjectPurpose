@@ -11,7 +11,7 @@ import com.wgfxer.projectpurpose.data.repository.PurposesRepository;
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
 import com.wgfxer.projectpurpose.helper.PreferencesHelper;
 import com.wgfxer.projectpurpose.helper.WidgetHelper;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
 
 import java.util.concurrent.Executors;
 

@@ -1,6 +1,5 @@
 package com.wgfxer.projectpurpose.helper;
 
-import android.graphics.Bitmap;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

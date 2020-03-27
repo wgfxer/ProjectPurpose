@@ -9,11 +9,11 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.wgfxer.projectpurpose.R;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
 import com.wgfxer.projectpurpose.presentation.view.addpurpose.AddPurposeActivity;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.PurposeInfoActivity;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
+import com.wgfxer.projectpurpose.presentation.viewmodel.PurposeViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 
 import java.util.List;
 
@@ -85,8 +85,8 @@ public class FuturePurposesFragment extends Fragment {
     }
 
     private void observeViewModel() {
-        MainViewModel viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
-                .get(MainViewModel.class);
+        PurposeViewModel viewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext()))
+                .get(PurposeViewModel.class);
         LiveData<List<Purpose>> purposesLiveData = viewModel.getFuturePurposes();
 
         if (purposesLiveData != null) {

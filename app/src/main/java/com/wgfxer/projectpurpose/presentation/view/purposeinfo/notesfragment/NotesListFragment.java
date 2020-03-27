@@ -13,12 +13,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.domain.ICanShowNote;
-import com.wgfxer.projectpurpose.models.data.Purpose;
-import com.wgfxer.projectpurpose.models.domain.Note;
+import com.wgfxer.projectpurpose.models.Note;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.notesfragment.NotesAdapter.OnNoteClickListener;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.notesfragment.NotesAdapter.OnNoteDeleteClickListener;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
+import com.wgfxer.projectpurpose.presentation.viewmodel.NoteViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
+
+import java.util.List;
 
 public class NotesListFragment extends Fragment {
     private static final String KEY_PURPOSE_ID = "KEY_PURPOSE_ID";
@@ -26,8 +27,7 @@ public class NotesListFragment extends Fragment {
     private Button newNoteButton;
     private NotesAdapter notesAdapter;
     private RecyclerView notesRecyclerView;
-    public Purpose purpose;
-    private MainViewModel viewModel;
+    private NoteViewModel viewModel;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.notes_list_fragment, container, false);
@@ -38,18 +38,15 @@ public class NotesListFragment extends Fragment {
         if (getTargetFragment() instanceof ICanShowNote) {
             canShowNote = (ICanShowNote) getTargetFragment();
         }
+        setupNewNoteButton(view);
+
+        setupNotesRecyclerView(view);
+
+        observeViewModel();
+    }
+
+    private void setupNotesRecyclerView(View view) {
         notesRecyclerView =  view.findViewById(R.id.notes_recycler_view);
-        newNoteButton = view.findViewById(R.id.new_note_button);
-        newNoteButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                Note newNote = new Note();
-                purpose.getNotesList().add(newNote);
-                viewModel.updatePurpose(purpose);
-                if (canShowNote != null) {
-                    canShowNote.showNote(newNote);
-                }
-            }
-        });
         notesAdapter = new NotesAdapter();
         notesAdapter.setOnNoteClickListener(new OnNoteClickListener() {
             public void onNoteClicked(Note note) {
@@ -60,22 +57,32 @@ public class NotesListFragment extends Fragment {
         });
         notesAdapter.setOnNoteDeleteClickListener(new OnNoteDeleteClickListener() {
             public void onNoteDeleteClicked(Note note) {
-                for (int i = 0; i < NotesListFragment.this.purpose.getNotesList().size(); i++) {
-                    if ((purpose.getNotesList().get(i)).getId().equals(note.getId())) {
-                        purpose.getNotesList().remove(i);
-                        viewModel.updatePurpose(purpose);
-                    }
-                }
+                viewModel.deleteNote(note);
             }
         });
         notesRecyclerView.setAdapter(notesAdapter);
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext())).get(MainViewModel.class);
-        viewModel.getPurposeById(getArguments().getInt(KEY_PURPOSE_ID)).observe(this, new Observer<Purpose>() {
-            public void onChanged(Purpose purpose) {
-                if (purpose != null) {
-                    NotesListFragment.this.purpose = purpose;
-                    notesAdapter.setNotesList(purpose.getNotesList());
+    }
+
+    private void setupNewNoteButton(View view) {
+        newNoteButton = view.findViewById(R.id.new_note_button);
+        newNoteButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if(canShowNote != null){
+                    canShowNote.showNewNote(getArguments().getInt(KEY_PURPOSE_ID));
+                }
+            }
+        });
+    }
+
+    private void observeViewModel() {
+        int purposeId = getArguments().getInt(KEY_PURPOSE_ID);
+        viewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext())).get(NoteViewModel.class);
+        viewModel.getNotes(purposeId).observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+                if(notes != null){
+                    notesAdapter.setNotesList(notes);
                 }
             }
         });

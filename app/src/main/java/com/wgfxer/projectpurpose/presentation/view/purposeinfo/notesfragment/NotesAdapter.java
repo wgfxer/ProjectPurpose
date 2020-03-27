@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.wgfxer.projectpurpose.R;
-import com.wgfxer.projectpurpose.models.domain.Note;
+import com.wgfxer.projectpurpose.models.Note;
 import java.util.ArrayList;
 import java.util.List;
 

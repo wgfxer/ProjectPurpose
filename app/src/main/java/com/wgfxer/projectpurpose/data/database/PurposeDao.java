@@ -1,6 +1,6 @@
 package com.wgfxer.projectpurpose.data.database;
 
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public interface PurposeDao {
      * @param purpose цель для вставки
      */
     @Insert
-    void insertPurpose(Purpose purpose);
+    long insertPurpose(Purpose purpose);
 
 
     /**

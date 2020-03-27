@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.PreferencesHelper;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.PurposeInfoActivity;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
+import com.wgfxer.projectpurpose.presentation.viewmodel.PurposeViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 
 import java.util.List;
 
@@ -110,8 +110,8 @@ public class ArchivePurposesFragment extends Fragment {
     }
 
     private void observeViewModel() {
-        MainViewModel viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
-                .get(MainViewModel.class);
+        PurposeViewModel viewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext()))
+                .get(PurposeViewModel.class);
         LiveData<List<Purpose>> completedPurposesLiveData = viewModel.getCompletedPurposes();
 
         if (completedPurposesLiveData != null) {

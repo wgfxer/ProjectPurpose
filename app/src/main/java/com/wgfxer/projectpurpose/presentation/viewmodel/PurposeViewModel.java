@@ -17,16 +17,20 @@ import androidx.lifecycle.ViewModel;
 
 
 /**
- * MainViewModel, в методах вызывает методы интерфейса IPurposesRepository
+ * PurposeViewModel, в методах вызывает методы интерфейса IPurposesRepository
  */
-public class MainViewModel extends ViewModel {
+public class PurposeViewModel extends ViewModel {
 
     private IPurposesRepository repository;
     private Context context;
 
-    public MainViewModel(IPurposesRepository repository, Context context) {
+    public PurposeViewModel(IPurposesRepository repository, Context context) {
         this.repository = repository;
         this.context = context.getApplicationContext();
+    }
+
+    public PurposeViewModel(IPurposesRepository repository) {
+        this.repository = repository;
     }
 
     public LiveData<List<Purpose>> getFuturePurposes() {
@@ -45,8 +49,8 @@ public class MainViewModel extends ViewModel {
         return repository.getPurposeById(id);
     }
 
-    public void insertPurpose(Purpose purpose) {
-        repository.insertPurpose(purpose);
+    public void insertPurpose(Purpose purpose, OnPurposeInsertedListener onPurposeInsertedListener) {
+        repository.insertPurpose(purpose, onPurposeInsertedListener);
     }
 
     public void updatePurpose(Purpose purpose) {
@@ -66,4 +70,7 @@ public class MainViewModel extends ViewModel {
         repository.deletePurpose(purpose);
     }
 
+    public interface OnPurposeInsertedListener{
+        void onPurposeInserted(long purposeId);
+    }
 }

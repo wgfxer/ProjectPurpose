@@ -14,14 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.PreferencesHelper;
-import com.wgfxer.projectpurpose.models.data.Purpose;
-import com.wgfxer.projectpurpose.models.domain.Task;
+import com.wgfxer.projectpurpose.models.Task;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.tasksfragment.TasksAdapter.OnNewTaskClickListener;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.tasksfragment.TasksAdapter.OnTaskDeleteClickListener;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.tasksfragment.TasksAdapter.OnTaskDoneClickListener;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
-import java.util.ArrayList;
+import com.wgfxer.projectpurpose.presentation.viewmodel.TaskViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 import java.util.List;
 
 public class TasksListFragment extends Fragment {
@@ -29,14 +27,14 @@ public class TasksListFragment extends Fragment {
     private TasksAdapter doneTasksAdapter;
     private RecyclerView doneTasksRecyclerView;
     private boolean isDoneTasksShow = true;
+    private TasksAdapter.OnTaskChangeListener onTaskChangeListener;
     private OnTaskDeleteClickListener onTaskDeleteClickListener;
     private OnTaskDoneClickListener onTaskDoneClickListener;
     private PreferencesHelper preferencesHelper;
-    private Purpose purpose;
     private Button showDoneTasksButton;
     private TasksAdapter tasksAdapter;
     private RecyclerView tasksRecyclerView;
-    private MainViewModel viewModel;
+    private TaskViewModel viewModel;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setRetainInstance(true);
@@ -54,36 +52,36 @@ public class TasksListFragment extends Fragment {
     }
 
     private void observeViewModel() {
-        viewModel =  ViewModelProviders.of( this,  new MainViewModelFactory(getContext())).get(MainViewModel.class);
-        viewModel.getPurposeById(getArguments().getInt(KEY_PURPOSE_ID)).observe(this, new Observer<Purpose>() {
-            public void onChanged(Purpose purpose) {
-                if (purpose != null) {
-                    TasksListFragment.this.purpose = purpose;
-                    updateUI();
+        viewModel =  ViewModelProviders.of( this,  new ViewModelFactory(getContext())).get(TaskViewModel.class);
+        int purposeId = getArguments().getInt(KEY_PURPOSE_ID);
+        viewModel.getFutureTasks(purposeId).observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                if(tasks != null){
+                    tasksAdapter.setTasksList(tasks);
+                }
+            }
+        });
+        viewModel.getDoneTasks(purposeId).observe(this, new Observer<List<Task>>() {
+            @Override
+            public void onChanged(List<Task> tasks) {
+                if(tasks != null){
+                    doneTasksAdapter.setTasksList(tasks);
+                    setupShowDoneTasksButtonVisibility(tasks);
                 }
             }
         });
     }
 
-    private void updateUI() {
-        tasksAdapter.setTasksList(getTasksIfDone(purpose.getTasksList(), false));
-        doneTasksAdapter.setTasksList(getTasksIfDone(purpose.getTasksList(), true));
-        if (getTasksIfDone(purpose.getTasksList(), true).size() == 0) {
-            showDoneTasksButton.setVisibility(View.GONE);
-        } else {
+    private void setupShowDoneTasksButtonVisibility(List<Task> tasks) {
+        if(tasks.size() > 0){
             showDoneTasksButton.setVisibility(View.VISIBLE);
+
+        }else{
+            showDoneTasksButton.setVisibility(View.GONE);
         }
     }
 
-    private List<Task> getTasksIfDone(List<Task> tasks, boolean isDone) {
-        List<Task> listTasks = new ArrayList<>();
-        for (Task task : tasks) {
-            if (task.isDone() == isDone) {
-                listTasks.add(task);
-            }
-        }
-        return listTasks;
-    }
 
     private void setIsDoneTasksShow(boolean isShow) {
         if (isShow) {
@@ -97,17 +95,21 @@ public class TasksListFragment extends Fragment {
     }
 
     private void setUpListeners() {
+        onTaskChangeListener = new TasksAdapter.OnTaskChangeListener() {
+            @Override
+            public void onTaskChange(Task task) {
+                    viewModel.updateTask(task);
+            }
+        };
         onTaskDeleteClickListener = new OnTaskDeleteClickListener() {
             public void onTaskDeleteClicked(Task task) {
-                if (purpose.getTasksList().remove(task)) {
-                    updateUI();
-                }
+                viewModel.deleteTask(task);
             }
         };
         onTaskDoneClickListener = new OnTaskDoneClickListener() {
             public void onTaskDoneClicked(Task task) {
                 task.setDone(!task.isDone());
-                updateUI();
+                viewModel.updateTask(task);
             }
         };
     }
@@ -117,10 +119,12 @@ public class TasksListFragment extends Fragment {
         tasksAdapter = new TasksAdapter(true);
         tasksAdapter.setOnNewTaskClickListener(new OnNewTaskClickListener() {
             public void onNewTaskClicked() {
-                purpose.getTasksList().add(new Task());
-                tasksAdapter.setTasksList(getTasksIfDone(purpose.getTasksList(),false));
+                Task task = new Task();
+                task.setPurposeId(getArguments().getInt(KEY_PURPOSE_ID));
+                viewModel.insertTask(task);
             }
         });
+        tasksAdapter.setOnTaskChangeListener(onTaskChangeListener);
         tasksAdapter.setOnTaskDeleteClickListener(onTaskDeleteClickListener);
         tasksAdapter.setOnTaskDoneClickListener(onTaskDoneClickListener);
         tasksRecyclerView.setAdapter(tasksAdapter);
@@ -131,6 +135,7 @@ public class TasksListFragment extends Fragment {
     private void setupDoneTasksView(View view) {
         doneTasksRecyclerView = view.findViewById(R.id.done_tasks_recycler_view);
         doneTasksAdapter = new TasksAdapter(false);
+        doneTasksAdapter.setOnTaskChangeListener(onTaskChangeListener);
         doneTasksAdapter.setOnTaskDeleteClickListener(onTaskDeleteClickListener);
         doneTasksAdapter.setOnTaskDoneClickListener(onTaskDoneClickListener);
         doneTasksRecyclerView.setAdapter(doneTasksAdapter);
@@ -147,11 +152,6 @@ public class TasksListFragment extends Fragment {
                 preferencesHelper.setIsDoneTasksShow(isDoneTasksShow);
             }
         });
-    }
-
-    public void onPause() {
-        super.onPause();
-        viewModel.updatePurpose(purpose);
     }
 
     public static TasksListFragment newInstance(int purposeId) {

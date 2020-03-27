@@ -14,10 +14,10 @@ import android.widget.RemoteViews;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.PreferencesHelper;
 import com.wgfxer.projectpurpose.helper.WidgetHelper;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
 import com.wgfxer.projectpurpose.presentation.view.purposeslist.PurposesAdapter;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
+import com.wgfxer.projectpurpose.presentation.viewmodel.PurposeViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class AppWidgetConfigActivity extends AppCompatActivity {
         final PurposesAdapter adapter = new PurposesAdapter();
         recyclerViewPurposes.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewPurposes.setAdapter(adapter);
-        MainViewModel viewModel = ViewModelProviders.of(this, new MainViewModelFactory(this)).get(MainViewModel.class);
+        PurposeViewModel viewModel = ViewModelProviders.of(this, new ViewModelFactory(this)).get(PurposeViewModel.class);
         viewModel.getFuturePurposes().observe(this, new Observer<List<Purpose>>() {
             @Override
             public void onChanged(List<Purpose> purposes) {

@@ -8,12 +8,16 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.wgfxer.projectpurpose.R;
-import com.wgfxer.projectpurpose.models.domain.Report;
+import com.wgfxer.projectpurpose.models.Report;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ReportViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Диалог для создания и изменения отчета
@@ -21,14 +25,7 @@ import androidx.fragment.app.DialogFragment;
 public class EditReportDialogFragment extends DialogFragment {
 
     private static final String KEY_REPORT_DATE = "KEY_REPORT_DATE";
-    private static final String KEY_REPORT_TITLE = "KEY_REPORT_TITLE";
-    private static final String KEY_REPORT_DESCRIPTION = "KEY_REPORT_DESCRIPTION";
-    private static final String KEY_REPORT_DID_GOOD = "KEY_REPORT_DID_GOOD";
-    private static final String KEY_REPORT_COULD_BETTER = "KEY_REPORT_COULD_BETTER";
-
-    private static final String KEY_MODE = "KEY_MODE";
-    private static final int KEY_MODE_EDIT = 1;
-    private static final int KEY_MODE_CREATE = 2;
+    private static final String KEY_PURPOSE_ID = "KEY_PURPOSE_ID";
 
     private OnEditReportListener onEditReportListener;
 
@@ -36,18 +33,7 @@ public class EditReportDialogFragment extends DialogFragment {
     private EditText reportDescriptionEditText;
     private EditText reportDidGoodEditText;
     private EditText reportCouldBetterEditText;
-    private long reportDate;
-
-
-    /**
-     * Интерфейс для слушания события изменения отчета или добавления нового отчета
-     */
-    interface OnEditReportListener {
-        /**
-         * вызывается после нажатия на кнопку готово в диалоге
-         */
-        void onEditReport(Report report);
-    }
+    private Report report;
 
 
     private void setOnEditReportListener(OnEditReportListener onEditReportListener) {
@@ -67,21 +53,23 @@ public class EditReportDialogFragment extends DialogFragment {
         return new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setTitle(getTitle())
-                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_ok_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Report report = new Report(
-                                reportDate,
-                                reportTitleEditText.getText().toString(),
-                                reportDescriptionEditText.getText().toString(),
-                                reportDidGoodEditText.getText().toString(),
-                                reportCouldBetterEditText.getText().toString()
-                        );
+                        if(report == null){
+                            report = new Report();
+                            report.setPurposeId(getArguments().getInt(KEY_PURPOSE_ID));
+                            report.setReportDate(getArguments().getLong(KEY_REPORT_DATE));
+                        }
+                        report.setTitleReport(reportTitleEditText.getText().toString());
+                        report.setDescriptionReport(reportDescriptionEditText.getText().toString());
+                        report.setWhatDidGood(reportDidGoodEditText.getText().toString());
+                        report.setWhatCouldBetter(reportCouldBetterEditText.getText().toString());
                         onEditReportListener.onEditReport(report);
                         dialogInterface.dismiss();
                     }
                 })
-                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel_text, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
@@ -91,18 +79,7 @@ public class EditReportDialogFragment extends DialogFragment {
     }
 
     /**
-     * заполняет edittext'ы если редактирование отчета
-     */
-    private void fillViews() {
-        reportDate = getArguments().getLong(KEY_REPORT_DATE);
-        reportTitleEditText.setText(getArguments().getString(KEY_REPORT_TITLE, null));
-        reportDescriptionEditText.setText(getArguments().getString(KEY_REPORT_DESCRIPTION, null));
-        reportDidGoodEditText.setText(getArguments().getString(KEY_REPORT_DID_GOOD, null));
-        reportCouldBetterEditText.setText(getArguments().getString(KEY_REPORT_COULD_BETTER, null));
-    }
-
-    /**
-     * находит все элементы во view
+     * Находит все элементы во view
      *
      * @param view в которой нужно найти элементы
      */
@@ -114,27 +91,41 @@ public class EditReportDialogFragment extends DialogFragment {
     }
 
     /**
-     * по текущему моду возвращает строку с заголовком диалога
+     * Заполняет edittext'ы если редактирование отчета
+     */
+    private void fillViews() {
+        if(report != null){
+            reportTitleEditText.setText(report.getTitleReport());
+            reportDescriptionEditText.setText(report.getDescriptionReport());
+            reportDidGoodEditText.setText(report.getWhatDidGood());
+            reportCouldBetterEditText.setText(report.getWhatCouldBetter());
+        }
+    }
+
+    /**
+     * Возвращает строку с заголовком диалога
      *
      * @return строку с title
      */
     private String getTitle() {
-        int mode = getArguments().getInt(KEY_MODE);
-        String title = null;
-        if (mode == KEY_MODE_CREATE) {
+        String title;
+        if (report == null) {
             title = getString(R.string.create_report_dialog_title);
-        } else if (mode == KEY_MODE_EDIT) {
+        } else {
             title = getString(R.string.edit_report_dialog_title);
         }
         return title;
     }
 
-    static EditReportDialogFragment getAddInstance(long reportDate, OnEditReportListener onEditReportListener) {
+    /**
+     * Получить экземпляр диалога для добавления отчета
+     */
+    static EditReportDialogFragment getAddInstance(long reportDate, int purposeId, OnEditReportListener onEditReportListener) {
 
         Bundle args = new Bundle();
 
         args.putLong(KEY_REPORT_DATE, reportDate);
-        args.putInt(KEY_MODE, KEY_MODE_CREATE);
+        args.putInt(KEY_PURPOSE_ID,purposeId);
 
         EditReportDialogFragment fragment = new EditReportDialogFragment();
         fragment.setArguments(args);
@@ -142,21 +133,28 @@ public class EditReportDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    /**
+     * Получить экземпляр диалога для изменения отчета
+     */
     static EditReportDialogFragment getEditInstance(Report report, OnEditReportListener onEditReportListener) {
 
         Bundle args = new Bundle();
 
-        args.putLong(KEY_REPORT_DATE, report.getDateReport());
-        args.putString(KEY_REPORT_TITLE, report.getTitleReport());
-        args.putString(KEY_REPORT_DESCRIPTION, report.getDescriptionReport());
-        args.putString(KEY_REPORT_DID_GOOD, report.getWhatDidGood());
-        args.putString(KEY_REPORT_COULD_BETTER, report.getWhatCouldBetter());
-        args.putInt(KEY_MODE, KEY_MODE_EDIT);
-
         EditReportDialogFragment fragment = new EditReportDialogFragment();
         fragment.setArguments(args);
         fragment.setOnEditReportListener(onEditReportListener);
+        fragment.report = report;
 
         return fragment;
+    }
+
+    /**
+     * Интерфейс для слушания события изменения отчета или добавления нового отчета
+     */
+    interface OnEditReportListener {
+        /**
+         * вызывается после нажатия на кнопку готово в диалоге
+         */
+        void onEditReport(Report report);
     }
 }

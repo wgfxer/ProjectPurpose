@@ -1,8 +1,12 @@
 package com.wgfxer.projectpurpose.presentation.view.purposeinfo;
 
+import android.content.Context;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.notesfragment.NotesFragment;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.reportsfragment.ReportsFragment;
 import com.wgfxer.projectpurpose.presentation.view.purposeinfo.tasksfragment.TasksListFragment;
@@ -13,11 +17,11 @@ public class PurposeDetailPagerAdapter extends FragmentPagerAdapter {
     private List<String> pages = new ArrayList<>();
     private int purposeId;
 
-    public PurposeDetailPagerAdapter(FragmentManager fm, int purposeId) {
+    public PurposeDetailPagerAdapter(FragmentManager fm, int purposeId, Context context) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        pages.add("Задачи");
-        pages.add("Заметки");
-        pages.add("Отчеты");
+        pages.add(context.getResources().getString(R.string.tasks_title));
+        pages.add(context.getResources().getString(R.string.notes_title));
+        pages.add(context.getResources().getString(R.string.reports_title));
         this.purposeId = purposeId;
     }
 

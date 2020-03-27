@@ -15,10 +15,9 @@ import android.widget.Toast;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
-import com.wgfxer.projectpurpose.models.data.Purpose;
-import com.wgfxer.projectpurpose.models.domain.Report;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
+import com.wgfxer.projectpurpose.models.Report;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ReportViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,12 +33,12 @@ import androidx.lifecycle.ViewModelProviders;
  * Фрагмент содержащий календарь с отчетами и сам отчет по выбранной или кнопку для добавления
  */
 public class ReportsFragment extends Fragment {
-    private static final String KEY_PICKED_DATE = "KEY_PICKED_DATE";
     private static final String KEY_PURPOSE_ID = "KEY_PURPOSE_ID";
 
     private CalendarView calendarView;
 
     private long selectedDate;
+    private int purposeId;
 
     private TextView reportTitleTextView;
     private TextView reportDescriptionTextView;
@@ -52,13 +51,13 @@ public class ReportsFragment extends Fragment {
 
     private CardView cardViewReport;
 
-    private MainViewModel viewModel;
-    private Purpose purpose;
-    private Report report;
+    private ReportViewModel viewModel;
+    private Report currentReport;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        setRetainInstance(true);
         return inflater.inflate(R.layout.reports_fragment, container, false);
     }
 
@@ -66,34 +65,31 @@ public class ReportsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         findViews(view);
-        selectedDate = Utils.getIndependentTime(calendarView.getDate());
-        calendarView.setMaxDate(System.currentTimeMillis());
-        observeViewModel();
-        setListeners();
         if (savedInstanceState != null) {
-            selectedDate = savedInstanceState.getLong(KEY_PICKED_DATE);
             calendarView.setDate(selectedDate);
         }
+        selectedDate = Utils.getIndependentTime(calendarView.getDate());
+        purposeId = getArguments().getInt(KEY_PURPOSE_ID);
+        calendarView.setMaxDate(System.currentTimeMillis());
+        observeViewModel();
+        viewModel.updateReportLiveData(selectedDate,purposeId);
+        setListeners();
     }
 
-    /**
-     * Сохранение состояния выбранной даты
-     */
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(KEY_PICKED_DATE, selectedDate);
-    }
-
-    /**
-     * возвращает новый экземпляр фрагмента для конкретной цели
-     */
-    public static ReportsFragment newInstance(int id) {
-        Bundle args = new Bundle();
-        args.putInt(KEY_PURPOSE_ID, id);
-        ReportsFragment fragment = new ReportsFragment();
-        fragment.setArguments(args);
-        return fragment;
+    private void observeViewModel() {
+        viewModel = ViewModelProviders.of(this, new ViewModelFactory(getContext()))
+                .get(ReportViewModel.class);
+        viewModel.getReport().observe(this, new Observer<Report>() {
+            @Override
+            public void onChanged(Report report) {
+                ReportsFragment.this.currentReport = report;
+                if(report == null){
+                    showButtonNewNote();
+                }else{
+                    showReport(report);
+                }
+            }
+        });
     }
 
     /**
@@ -112,36 +108,21 @@ public class ReportsFragment extends Fragment {
     }
 
     /**
-     * подписка на вьюмодель
-     * после подписки отображает текущий отчет
-     */
-    private void observeViewModel() {
-        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(getContext()))
-                .get(MainViewModel.class);
-        viewModel.getPurposeById(getArguments().getInt(KEY_PURPOSE_ID)).observe(this, new Observer<Purpose>() {
-            @Override
-            public void onChanged(Purpose purpose) {
-                if (purpose != null) {
-                    ReportsFragment.this.purpose = purpose;
-                    showCurrentReport();
-                }
-            }
-        });
-    }
-
-    /**
-     * устанавливает слушатели на календарь, кнопку изменения и кнопку добавления отчета
+     * Устанавливает слушатели на календарь, кнопку изменения и кнопку добавления отчета
      */
     private void setListeners() {
         editReportImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditReportDialogFragment editReportDialog = EditReportDialogFragment.getEditInstance(report, new EditReportDialogFragment.OnEditReportListener() {
+                EditReportDialogFragment editReportDialog = EditReportDialogFragment.getEditInstance(currentReport, new EditReportDialogFragment.OnEditReportListener() {
                     @Override
                     public void onEditReport(Report report) {
-                        ReportsFragment.this.report = report;
-                        showReport(report);
-                        saveReport(report);
+                        viewModel.updateReport(report, new ReportViewModel.OnReportUpdatedListener() {
+                            @Override
+                            public void onReportUpdated() {
+                                viewModel.updateReportLiveData(selectedDate,purposeId);
+                            }
+                        });
                     }
                 });
                 editReportDialog.show(getChildFragmentManager(), null);
@@ -151,18 +132,20 @@ public class ReportsFragment extends Fragment {
         createReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditReportDialogFragment addReportDialog = EditReportDialogFragment.getAddInstance(selectedDate, new EditReportDialogFragment.OnEditReportListener() {
+                EditReportDialogFragment addReportDialog = EditReportDialogFragment.getAddInstance(selectedDate,purposeId, new EditReportDialogFragment.OnEditReportListener() {
                     @Override
                     public void onEditReport(Report report) {
-                        ReportsFragment.this.report = report;
-                        showReport(report);
-                        addReport(report);
+                        viewModel.insertReport(report, new ReportViewModel.OnReportInsertedListener() {
+                            @Override
+                            public void onReportInserted(long reportId) {
+                                viewModel.updateReportLiveData(selectedDate,purposeId);
+                            }
+                        });
                     }
                 });
                 addReportDialog.show(getChildFragmentManager(), null);
             }
         });
-
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -172,20 +155,20 @@ public class ReportsFragment extends Fragment {
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 selectedDate = Utils.getIndependentTime(calendar.getTimeInMillis());
-                showCurrentReport();
+                viewModel.updateReportLiveData(selectedDate,purposeId);
             }
         });
 
         copyReportImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String reportString = Utils.getStringFromDate(new Date(report.getDateReport())) +
-                        " " + report.getTitleReport() +
-                        "\n" + report.getDescriptionReport() +
+                String reportString = Utils.getStringFromDate(new Date(currentReport.getReportDate())) +
+                        " " + currentReport.getTitleReport() +
+                        "\n" + currentReport.getDescriptionReport() +
                         "\n" + getString(R.string.what_did_good_text) +
-                        "\n" + report.getWhatDidGood() +
+                        "\n" + currentReport.getWhatDidGood() +
                         "\n" + getString(R.string.what_could_better_text) +
-                        "\n" + report.getWhatCouldBetter();
+                        "\n" + currentReport.getWhatCouldBetter();
                 copyText(reportString.replaceAll("null", ""));
             }
         });
@@ -208,52 +191,12 @@ public class ReportsFragment extends Fragment {
         }
     }
 
-
     /**
-     * добавляет отчет в цель
+     * Скрывает отчет и отображает кнопку добавления отчета
      */
-    private void addReport(Report report) {
-        purpose.getReportsList().add(report);
-        viewModel.updatePurpose(purpose);
-    }
-
-    /**
-     * сохраняет уже созданный отчет у цели
-     */
-    private void saveReport(Report report) {
-        for (int i = 0; i < purpose.getReportsList().size(); i++) {
-            if (purpose.getReportsList().get(i).getDateReport() == report.getDateReport()) {
-                purpose.getReportsList().set(i, report);
-            }
-            viewModel.updatePurpose(purpose);
-        }
-    }
-
-    /**
-     * отображает текущий отчет по дате, если отчета нет показывает кнопку для добавления
-     */
-    private void showCurrentReport() {
-        report = getReportBySelectedDate();
-        if (report != null) {
-            showReport(report);
-        } else {
-            createReportButton.setVisibility(View.VISIBLE);
-            cardViewReport.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    /**
-     * ищет отчет в цели, если его нет возвращает null
-     */
-    @Nullable
-    private Report getReportBySelectedDate() {
-        Report report = null;
-        for (Report rep : purpose.getReportsList()) {
-            if (rep.getDateReport() == selectedDate) {
-                report = rep;
-            }
-        }
-        return report;
+    private void showButtonNewNote(){
+        createReportButton.setVisibility(View.VISIBLE);
+        cardViewReport.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -270,5 +213,14 @@ public class ReportsFragment extends Fragment {
         reportCouldBetterTextView.setText(report.getWhatCouldBetter());
     }
 
-
+    /**
+     * Возвращает новый экземпляр фрагмента для конкретной цели
+     */
+    public static ReportsFragment newInstance(int id) {
+        Bundle args = new Bundle();
+        args.putInt(KEY_PURPOSE_ID, id);
+        ReportsFragment fragment = new ReportsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 }

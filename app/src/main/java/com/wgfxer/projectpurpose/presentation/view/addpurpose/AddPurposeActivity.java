@@ -19,9 +19,11 @@ import android.widget.Toast;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
-import com.wgfxer.projectpurpose.models.data.Purpose;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
+import com.wgfxer.projectpurpose.models.Note;
+import com.wgfxer.projectpurpose.models.Purpose;
+import com.wgfxer.projectpurpose.presentation.viewmodel.NoteViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.PurposeViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 
 import java.util.Date;
 
@@ -31,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
 
 /**
@@ -51,7 +54,7 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
     private LinearLayout purposeLL;
     private Purpose purpose;
     private int id;
-    private MainViewModel viewModel;
+    private PurposeViewModel viewModel;
 
 
     @Override
@@ -59,8 +62,8 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_purpose);
 
-        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(this))
-                .get(MainViewModel.class);
+        viewModel = ViewModelProviders.of(this, new ViewModelFactory(this))
+                .get(PurposeViewModel.class);
 
         setUpViews();
 
@@ -166,7 +169,12 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
                         viewModel.updatePurpose(purpose);
                         onBackPressed();
                     } else {
-                        viewModel.insertPurpose(purpose);
+                        viewModel.insertPurpose(purpose, new PurposeViewModel.OnPurposeInsertedListener() {
+                            @Override
+                            public void onPurposeInserted(long purposeId) {
+                                insertDefaultNotes(purposeId);
+                            }
+                        });
                         onBackPressed();
                     }
                 }
@@ -189,6 +197,21 @@ public class AddPurposeActivity extends AppCompatActivity implements View.OnClic
             default:
                 break;
         }
+    }
+
+    private void insertDefaultNotes(long purposeId) {
+        NoteViewModel noteViewModel = ViewModelProviders.of(AddPurposeActivity.this,
+                new ViewModelFactory(AddPurposeActivity.this)).get(NoteViewModel.class);
+        Note actionsPlanNote = new Note();
+        actionsPlanNote.setPurposeId(purposeId);
+        actionsPlanNote.setTitle(getString(R.string.actions_plan_title));
+        actionsPlanNote.setBody(getString(R.string.actions_plan_hint));
+        noteViewModel.insertNote(actionsPlanNote,null);
+        Note motivationNote = new Note();
+        motivationNote.setPurposeId(purposeId);
+        motivationNote.setTitle(getString(R.string.motivation_title));
+        motivationNote.setBody(getString(R.string.motivation_hint));
+        noteViewModel.insertNote(motivationNote,null);
     }
 
     /**

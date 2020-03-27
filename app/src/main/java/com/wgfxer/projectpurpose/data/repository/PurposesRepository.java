@@ -1,27 +1,30 @@
 package com.wgfxer.projectpurpose.data.repository;
 
 import com.wgfxer.projectpurpose.data.database.ProjectPurposeDatabase;
+import com.wgfxer.projectpurpose.data.database.PurposeDao;
 import com.wgfxer.projectpurpose.domain.IPurposesRepository;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
+import com.wgfxer.projectpurpose.presentation.viewmodel.PurposeViewModel;
 
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
 /**
- * Реализация интерфейса репозиторий
- * Обращается к dao через database
+ * Реализация интерфейса IPurposesRepository для доступа к таблице с целями
+ * Обращается к базе данных через Dao
  */
 public class PurposesRepository implements IPurposesRepository {
 
 
-    private ProjectPurposeDatabase database;
+    private PurposeDao purposeDao;
     private Executor executor;
 
     public PurposesRepository(ProjectPurposeDatabase database,
                               Executor executor) {
-        this.database = database;
+        purposeDao = database.purposeDao();
         this.executor = executor;
     }
 
@@ -33,7 +36,7 @@ public class PurposesRepository implements IPurposesRepository {
      */
     @Override
     public LiveData<List<Purpose>> getFuturePurposes() {
-        return database.purposeDao().getFuturePurposes(System.currentTimeMillis());
+        return purposeDao.getFuturePurposes(System.currentTimeMillis());
     }
 
     /**
@@ -43,7 +46,7 @@ public class PurposesRepository implements IPurposesRepository {
      */
     @Override
     public LiveData<List<Purpose>> getCompletedPurposes() {
-        return database.purposeDao().getCompletedPurposes();
+        return purposeDao.getCompletedPurposes();
     }
 
     /**
@@ -52,7 +55,7 @@ public class PurposesRepository implements IPurposesRepository {
      * @return liveData с просроченными целями
      */
     public LiveData<List<Purpose>> getExpiredPurposes() {
-        return database.purposeDao().getExpiredPurposes(System.currentTimeMillis());
+        return purposeDao.getExpiredPurposes(System.currentTimeMillis());
     }
 
     /**
@@ -63,7 +66,7 @@ public class PurposesRepository implements IPurposesRepository {
      */
     @Override
     public LiveData<Purpose> getPurposeById(int id) {
-        return database.purposeDao().getPurposeById(id);
+        return purposeDao.getPurposeById(id);
     }
 
     /**
@@ -71,12 +74,15 @@ public class PurposesRepository implements IPurposesRepository {
      *
      * @param purpose цель для вставки
      */
-    public void insertPurpose(final Purpose purpose) {
+    public void insertPurpose(final Purpose purpose,@Nullable final PurposeViewModel.OnPurposeInsertedListener onPurposeInsertedListener) {
 
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                database.purposeDao().insertPurpose(purpose);
+                long purposeId = purposeDao.insertPurpose(purpose);
+                if(onPurposeInsertedListener != null){
+                    onPurposeInsertedListener.onPurposeInserted(purposeId);
+                }
             }
         });
     }
@@ -91,7 +97,7 @@ public class PurposesRepository implements IPurposesRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                database.purposeDao().updatePurpose(purpose);
+                purposeDao.updatePurpose(purpose);
             }
         });
     }
@@ -105,7 +111,7 @@ public class PurposesRepository implements IPurposesRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                database.purposeDao().deletePurpose(purpose);
+                purposeDao.deletePurpose(purpose);
             }
         });
     }

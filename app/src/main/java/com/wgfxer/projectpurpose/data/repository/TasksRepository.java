@@ -1,111 +1,99 @@
 package com.wgfxer.projectpurpose.data.repository;
 
+
+import androidx.lifecycle.LiveData;
+
 import com.wgfxer.projectpurpose.data.database.ProjectPurposeDatabase;
-import com.wgfxer.projectpurpose.domain.IPurposesRepository;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.data.database.TaskDao;
+import com.wgfxer.projectpurpose.domain.ITasksRepository;
+import com.wgfxer.projectpurpose.models.Task;
 
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import androidx.lifecycle.LiveData;
-
 /**
- * Реализация интерфейса репозиторий
- * Обращается к dao через database
+ * Реализация интерфейса ITasksRepository для доступа к таблице с задачами
+ * Обращается к базе данных через Dao
  */
-public class PurposesRepository implements IPurposesRepository {
+public class TasksRepository implements ITasksRepository {
 
-
-    private ProjectPurposeDatabase database;
+    private TaskDao taskDao;
     private Executor executor;
 
-    public PurposesRepository(ProjectPurposeDatabase database,
-                              Executor executor) {
-        this.database = database;
+    public TasksRepository(ProjectPurposeDatabase database,
+                           Executor executor) {
+        taskDao = database.taskDao();
         this.executor = executor;
     }
 
-
     /**
-     * получить будущие цели
-     *
-     * @return liveData с будущими целями
+     * Получить невыполненные задачи
+     * @param purposeId id цели для которой получаем невыполненные задачи
+     * @return LiveData со списком невыполненных задач
      */
     @Override
-    public LiveData<List<Purpose>> getFuturePurposes() {
-        return database.purposeDao().getFuturePurposes(System.currentTimeMillis());
+    public LiveData<List<Task>> getFutureTasks(int purposeId) {
+        return taskDao.getFutureTasks(purposeId);
     }
 
     /**
-     * получить выполненные цели
-     *
-     * @return liveData с выполненными целями
+     * Получить выполненные задачи
+     * @param purposeId id цели для которой получаем выполненные задачи
+     * @return LiveData со списком выполненных задач
      */
     @Override
-    public LiveData<List<Purpose>> getCompletedPurposes() {
-        return database.purposeDao().getCompletedPurposes();
+    public LiveData<List<Task>> getDoneTasks(int purposeId) {
+        return taskDao.getDoneTasks(purposeId);
     }
 
     /**
-     * получить просроченные цели
-     *
-     * @return liveData с просроченными целями
-     */
-    public LiveData<List<Purpose>> getExpiredPurposes() {
-        return database.purposeDao().getExpiredPurposes(System.currentTimeMillis());
-    }
-
-    /**
-     * Получить purpose по id
-     *
-     * @param id цели
-     * @return liveData с целью
+     * Получить задачу по id
+     * @param taskId id задачи
+     * @return LiveData с задачей
      */
     @Override
-    public LiveData<Purpose> getPurposeById(int id) {
-        return database.purposeDao().getPurposeById(id);
+    public LiveData<Task> getTaskById(int taskId) {
+        return taskDao.getTaskById(taskId);
     }
 
     /**
-     * Вставить цель
-     *
-     * @param purpose цель для вставки
+     * Вставить задачу
+     * @param task задача для вставки
      */
-    public void insertPurpose(final Purpose purpose) {
-
+    @Override
+    public void insertTask(final Task task) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                database.purposeDao().insertPurpose(purpose);
+                taskDao.insertTask(task);
             }
         });
     }
 
     /**
-     * Обновить цель в бд
-     *
-     * @param purpose цель для обновления
+     * Обновить задачу
+     * @param task задача для обновления
      */
-    public void updatePurpose(final Purpose purpose) {
-
+    @Override
+    public void updateTask(final Task task) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                database.purposeDao().updatePurpose(purpose);
+                taskDao.updateTask(task);
             }
         });
     }
 
     /**
-     * удалить цель
-     *
-     * @param purpose цель для удаления
+     * Удалить задачу
+     * @param task задача для удаления
      */
-    public void deletePurpose(final Purpose purpose) {
+    @Override
+    public void deleteTask(final Task task) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                database.purposeDao().deletePurpose(purpose);
+                taskDao.deleteTask(task);
             }
         });
     }

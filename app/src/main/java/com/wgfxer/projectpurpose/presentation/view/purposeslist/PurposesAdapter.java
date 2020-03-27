@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
-import com.wgfxer.projectpurpose.models.data.Purpose;
+import com.wgfxer.projectpurpose.models.Purpose;
+import com.wgfxer.projectpurpose.models.PurposeTheme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,7 @@ public class PurposesAdapter extends RecyclerView.Adapter<PurposesAdapter.Purpos
                     }
                 }
             });
-            imageViewGradient.setImageResource(purpose.getTheme().getGradientId());
+            imageViewGradient.setImageResource(PurposeTheme.GRADIENTS[purpose.getTheme().getGradientPosition()]);
             imageViewGradient.setAlpha(purpose.getTheme().getGradientAlpha());
             if (purpose.getTheme().getImagePath() != null) {
                 imageViewBackground.setImageBitmap(BitmapFactory.decodeFile(purpose.getTheme().getImagePath()));

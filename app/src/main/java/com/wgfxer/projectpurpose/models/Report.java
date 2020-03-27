@@ -1,49 +1,47 @@
-package com.wgfxer.projectpurpose.models.domain;
+package com.wgfxer.projectpurpose.models;
 
-import androidx.annotation.NonNull;
+
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.PrimaryKey;
+
+import static androidx.room.ForeignKey.CASCADE;
 
 /**
  * Модель отчета по цели
  */
+@Entity(tableName = "reports",foreignKeys = @ForeignKey(entity = Purpose.class,parentColumns = "id", childColumns = "purposeId", onDelete = CASCADE))
 public class Report {
-    /**
-     * дата по которой сделан отчет
-     */
-    private long dateReport;
-    /**
-     * название отчета
-     */
+
+    @PrimaryKey(autoGenerate = true)
+    private int reportId;
+
+    private long reportDate;
+
     private String titleReport;
-    /**
-     * описание отчета
-     */
+
     private String descriptionReport;
-    /**
-     * что сделал хорошо в этот день
-     */
+
     private String whatDidGood;
-    /**
-     * что можно было сделать лучше в этот день
-     */
+
     private String whatCouldBetter;
 
-    public Report() {
+    private int purposeId;
+
+    public int getReportId() {
+        return reportId;
     }
 
-    public Report(long dateReport, String titleReport, String descriptionReport, String whatDidGood, String whatCouldBetter) {
-        this.dateReport = dateReport;
-        this.titleReport = titleReport;
-        this.descriptionReport = descriptionReport;
-        this.whatDidGood = whatDidGood;
-        this.whatCouldBetter = whatCouldBetter;
+    public void setReportId(int reportId) {
+        this.reportId = reportId;
     }
 
-    public long getDateReport() {
-        return dateReport;
+    public long getReportDate() {
+        return reportDate;
     }
 
-    public void setDateReport(long dateReport) {
-        this.dateReport = dateReport;
+    public void setReportDate(long reportDate) {
+        this.reportDate = reportDate;
     }
 
     public String getTitleReport() {
@@ -78,6 +76,14 @@ public class Report {
         this.whatCouldBetter = whatCouldBetter;
     }
 
+    public int getPurposeId() {
+        return purposeId;
+    }
+
+    public void setPurposeId(int purposeId) {
+        this.purposeId = purposeId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,7 +91,9 @@ public class Report {
 
         Report report = (Report) o;
 
-        if (dateReport != report.dateReport) return false;
+        if (reportId != report.reportId) return false;
+        if (reportDate != report.reportDate) return false;
+        if (purposeId != report.purposeId) return false;
         if (titleReport != null ? !titleReport.equals(report.titleReport) : report.titleReport != null)
             return false;
         if (descriptionReport != null ? !descriptionReport.equals(report.descriptionReport) : report.descriptionReport != null)
@@ -97,23 +105,27 @@ public class Report {
 
     @Override
     public int hashCode() {
-        int result = (int) (dateReport ^ (dateReport >>> 32));
+        int result = reportId;
+        result = 31 * result + (int) (reportDate ^ (reportDate >>> 32));
         result = 31 * result + (titleReport != null ? titleReport.hashCode() : 0);
         result = 31 * result + (descriptionReport != null ? descriptionReport.hashCode() : 0);
         result = 31 * result + (whatDidGood != null ? whatDidGood.hashCode() : 0);
         result = 31 * result + (whatCouldBetter != null ? whatCouldBetter.hashCode() : 0);
+        result = 31 * result + purposeId;
         return result;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "Report{" +
-                "dateReport=" + dateReport +
+                "reportId=" + reportId +
+                ", reportDate=" + reportDate +
                 ", titleReport='" + titleReport + '\'' +
                 ", descriptionReport='" + descriptionReport + '\'' +
                 ", whatDidGood='" + whatDidGood + '\'' +
                 ", whatCouldBetter='" + whatCouldBetter + '\'' +
+                ", purposeId=" + purposeId +
                 '}';
     }
 }
+

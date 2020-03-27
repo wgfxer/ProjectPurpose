@@ -6,19 +6,15 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,23 +23,17 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.Utils;
-import com.wgfxer.projectpurpose.models.data.Purpose;
-import com.wgfxer.projectpurpose.models.domain.PurposeTheme;
+import com.wgfxer.projectpurpose.models.Purpose;
+import com.wgfxer.projectpurpose.models.PurposeTheme;
 import com.wgfxer.projectpurpose.presentation.view.addpurpose.AddPurposeActivity;
-import com.wgfxer.projectpurpose.presentation.view.purposeinfo.notesfragment.NotesListFragment;
-import com.wgfxer.projectpurpose.presentation.view.purposeinfo.reportsfragment.ReportsFragment;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.MainViewModelFactory;
+import com.wgfxer.projectpurpose.presentation.viewmodel.PurposeViewModel;
+import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 
 import java.util.Date;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.ViewCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
@@ -66,7 +56,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
     private Toolbar toolbar;
     private ImageView toolbarGradient;
     private ImageView toolbarImage;
-    private MainViewModel viewModel;
+    private PurposeViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,7 +187,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
 
     private void setUpViewPager() {
         purposeDetailPager.setAdapter(new PurposeDetailPagerAdapter(getSupportFragmentManager(),
-                getIntent().getIntExtra(KEY_PURPOSE_ID, -1)));
+                getIntent().getIntExtra(KEY_PURPOSE_ID, -1), this));
         tabLayout.setupWithViewPager(purposeDetailPager);
         tabLayout.setTabTextColors(getResources().getColor(R.color.colorChipStroke), getResources().getColor(R.color.colorPrimary));
         tabLayout.setBackgroundResource(android.R.color.transparent);
@@ -237,7 +227,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
      * подписка на вьюмодель,при изменении цели обновление ui
      */
     private void observeViewModel() {
-        viewModel = ViewModelProviders.of(this, new MainViewModelFactory(this)).get(MainViewModel.class);
+        viewModel = ViewModelProviders.of(this, new ViewModelFactory(this)).get(PurposeViewModel.class);
         viewModel.getPurposeById(getIntent().getIntExtra(KEY_PURPOSE_ID, -1)).observe(this, new Observer<Purpose>() {
             public void onChanged(Purpose purpose) {
                 PurposeInfoActivity.this.purpose = purpose;
@@ -254,7 +244,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
      */
     private void updateUI() {
         purposeTitleTextView.setText(purpose.getTitle());
-        toolbarGradient.setImageResource(purpose.getTheme().getGradientId());
+        toolbarGradient.setImageResource(PurposeTheme.GRADIENTS[purpose.getTheme().getGradientPosition()]);
         toolbarGradient.setAlpha(purpose.getTheme().getGradientAlpha());
         if (purpose.getTheme().getImagePath() != null) {
             toolbarImage.setImageBitmap(BitmapFactory.decodeFile(purpose.getTheme().getImagePath()));
@@ -268,7 +258,7 @@ public class PurposeInfoActivity extends AppCompatActivity implements EditThemeD
             daysLeftTextView.setText(getString(R.string.time_end_text));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            int themeColor = ((GradientDrawable) getDrawable(purpose.getTheme().getGradientId())).getColors()[1];
+            int themeColor = ((GradientDrawable) getDrawable(PurposeTheme.GRADIENTS[purpose.getTheme().getGradientPosition()])).getColors()[1];
             daysLeftTextView.setTextColor(themeColor);
             tabLayout.setTabTextColors(getResources().getColor(R.color.colorChipStroke, getTheme()), themeColor);
         }
