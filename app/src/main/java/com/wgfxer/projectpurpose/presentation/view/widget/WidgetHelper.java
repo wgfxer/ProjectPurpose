@@ -1,4 +1,4 @@
-package com.wgfxer.projectpurpose.helper;
+package com.wgfxer.projectpurpose.presentation.view.widget;
 
 import android.app.PendingIntent;
 import android.content.Context;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.wgfxer.projectpurpose.R;
+import com.wgfxer.projectpurpose.helper.Utils;
 import com.wgfxer.projectpurpose.models.Purpose;
 import com.wgfxer.projectpurpose.models.PurposeTheme;
 import com.wgfxer.projectpurpose.presentation.view.MainActivity;
@@ -48,8 +49,9 @@ public class WidgetHelper {
             String daysLabel = (context.getResources().getQuantityString(R.plurals.days_count,daysToPurpose)).substring(5);
             remoteViews.setCharSequence(R.id.label_days, "setText",
                     daysLabel);
+            remoteViews.setViewVisibility(R.id.label_days, View.VISIBLE);
         } else {
-            remoteViews.setCharSequence(R.id.text_view_days, "setText", context.getString(R.string.time_end_text));
+            remoteViews.setCharSequence(R.id.text_view_days, "setText", context.getString(R.string.time_end_text_widget));
             remoteViews.setViewVisibility(R.id.label_days, View.GONE);
         }
     }

@@ -13,7 +13,6 @@ import android.widget.RemoteViews;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.PreferencesHelper;
-import com.wgfxer.projectpurpose.helper.WidgetHelper;
 import com.wgfxer.projectpurpose.models.Purpose;
 import com.wgfxer.projectpurpose.presentation.view.purposeslist.PurposesAdapter;
 import com.wgfxer.projectpurpose.presentation.viewmodel.PurposeViewModel;

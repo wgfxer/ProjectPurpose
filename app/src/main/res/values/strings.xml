@@ -31,6 +31,7 @@
     <string name="purposes_list_title">BE THE HARDEST WORKER IN THE ROOM</string>
     <string name="actions_plan_text">План действий</string>
     <string name="time_end_text">Время вышло</string>
+    <string name="time_end_text_widget">Время \nвышло</string>
     <string name="days_left_text">Осталось %s</string>
     <string name="toast_didnt_enter_goal_name">Вы не вввели название цели</string>
     <string name="toast_didnt_enter_date">Вы не выбрали дату цели</string>
