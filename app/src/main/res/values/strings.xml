@@ -47,7 +47,8 @@
     <string name="white_font_text">Белый шрифт</string>
 
     <string name="add_in_calendar_text">Добавить в календарь</string>
-    <string name="reports_text">Отчеты</string>
+    <string name="reports_title">Отчеты</string>
+    <string name="tasks_title">Задачи</string>
     <string name="write_report_text">Написать отчет</string>
     <string name="what_did_good_text">Что было сделано хорошо?</string>
     <string name="what_could_better_text">Что можно было сделать лучше?</string>

@@ -9,15 +9,11 @@ import android.widget.EditText;
 
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.models.Report;
-import com.wgfxer.projectpurpose.presentation.viewmodel.ReportViewModel;
-import com.wgfxer.projectpurpose.presentation.viewmodel.ViewModelFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 /**
  * Диалог для создания и изменения отчета

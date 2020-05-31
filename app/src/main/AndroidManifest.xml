@@ -10,15 +10,15 @@
         android:roundIcon="@drawable/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".presentation.view.ProjectPurposeApplication"
+        android:name="com.wgfxer.projectpurpose.presentation.view.ProjectPurposeApplication"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".presentation.view.widget.AppWidgetConfigActivity">
+        <activity android:name="com.wgfxer.projectpurpose.presentation.view.widget.AppWidgetConfigActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.view.MainActivity"
+            android:name="com.wgfxer.projectpurpose.presentation.view.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
@@ -27,10 +27,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.view.addpurpose.AddPurposeActivity" />
-        <activity android:name=".presentation.view.purposeinfo.PurposeInfoActivity" />
+        <activity android:name="com.wgfxer.projectpurpose.presentation.view.addpurpose.AddPurposeActivity" />
+        <activity android:name="com.wgfxer.projectpurpose.presentation.view.purposeinfo.PurposeInfoActivity" />
 
-        <receiver android:name=".presentation.view.widget.WidgetProvider">
+        <receiver android:name="com.wgfxer.projectpurpose.presentation.view.widget.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -40,7 +40,7 @@
                 android:resource="@xml/appwidget_info" />
         </receiver>
     </application>
-
+dsadasd
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
 </manifest>

@@ -14,9 +14,7 @@ import android.widget.TextView;
 import com.wgfxer.projectpurpose.R;
 import com.wgfxer.projectpurpose.helper.PreferencesHelper;
 import com.wgfxer.projectpurpose.helper.Utils;
-import com.wgfxer.projectpurpose.presentation.view.addpurpose.DatePickerDialogFragment;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
